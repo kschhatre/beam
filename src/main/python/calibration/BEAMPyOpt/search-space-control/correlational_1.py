@@ -5,15 +5,15 @@ import pandas as pd
 
 # KEEP ALL INTERCEPTS AS ZERO and KEEP OUTPUT FOLDER EMPTY!!
 
-beam_repo = '/home/ubuntu/calibration_stage1/beam'
-file_conf = '/home/ubuntu/calibration_stage1/beam/test/input/sf-light/urbansim-10k.conf'
-file_txt  = '/home/ubuntu/calibration_stage1/beam/test/input/sf-light/urbansim-10k.txt'
-shared    = '/home/ubuntu/calibration_stage1/storage' 
+beam_repo = '/home/ubuntu/beam'
+file_conf = '/home/ubuntu/beam/test/input/sf-light/urbansim-10k.conf'
+file_txt  = '/home/ubuntu/beam/test/input/sf-light/urbansim-10k.txt'
+shared    = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage' 
 
 ################################### Fire BEAM
 os.chdir(beam_repo) 
 subprocess.call(beam_repo+'/runme.sh')
-os.chdir('/home/ubuntu/calibration_stage1/beam-calibration/search-space-control')
+os.chdir('/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/search-space-control')
 
 ################################### Bookkeeping phase
 
