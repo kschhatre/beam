@@ -6,7 +6,7 @@ from worker_1 import fire_BEAM, bookkeep
 
 #sys.stdout=open("test.txt","w")     # if required to export the outputs to a file
 
-beam = '/home/berkeleylab/Repository/beam'   
+beam = '/home/ubuntu/beam'   
 BEAM_procs = []
 bookkeeping_procs = []
 

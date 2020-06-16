@@ -6,7 +6,7 @@ import itertools, glob, fnmatch, os,random
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-shared = '/home/berkeleylab/Model/storage'
+shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'
 
 def getNudges():
     input_vector = []

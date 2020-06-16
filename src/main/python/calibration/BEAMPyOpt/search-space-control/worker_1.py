@@ -7,8 +7,8 @@ import subprocess, os, shutil, glob, time
 # NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
 # paths
-shared = '/home/berkeleylab/Model/storage'
-beam = '/home/berkeleylab/Repository/beam'
+shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'
+beam = '/home/ubuntu/beam'
 
 # iterator
 total_rel_nudge_trials = 36
@@ -91,7 +91,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
         if time.ctime(os.path.getctime(glob.glob(beam+'/output/sf-light/*')[i])) < time_now:
             pass 
         elif time.ctime(os.path.getctime(glob.glob(beam+'/output/sf-light/*')[i])) > time_now: 
-            output_folders.append(glob.glob(beam+'/sf-light/*')[i]) if glob.glob(beam+'/sf-light/*')[i] not in output_folders else output_folders
+            output_folders.append(glob.glob(beam+'/output/sf-light/*')[i]) if glob.glob(beam+'/output/sf-light/*')[i] not in output_folders else output_folders
     if any( [not output_folders, len(output_folders) < parallel_passes] ):
         return find_op_folder(time_now, parallel_passes)
     else:
