@@ -2,7 +2,7 @@
 # Implementation 2 related
 import numpy as np 
 import pandas as pd 
-import itertools, glob, fnmatch, os,random
+import itertools, glob, fnmatch, os, random, csv
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -11,7 +11,9 @@ shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'
 def getNudges():
     input_vector = []
     if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == 1):
-        df =  pd.read_csv(glob.glob(shared+'/1_*.csv'))    
+        csv_name = glob.glob(shared+'/1_*.csv')[0]
+        modify_csv(csv_name=csv_name)   
+        df =  pd.read_csv(csv_name)    
         for j in range(7): 
             vector_4_gradients = []
             for i in range(1,len(df.loc[5])):
