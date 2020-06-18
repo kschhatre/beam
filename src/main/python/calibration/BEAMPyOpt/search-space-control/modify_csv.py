@@ -1,6 +1,5 @@
 import glob, csv, os
-
-shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'  
+from config import *
 
 def modify_csv(csv_name):
     reader = csv.reader(open(csv_name, "r"), delimiter='\t') 

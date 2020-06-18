@@ -5,9 +5,9 @@ import pandas as pd
 import itertools, glob, fnmatch, os, random, csv
 from modify_csv import modify_csv
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+from config import *
 
-shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def getNudges():
     input_vector = []

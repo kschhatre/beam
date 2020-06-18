@@ -3,10 +3,10 @@
 from multiprocessing import Process
 import random, time, psutil, logging, sys, multiprocessing, subprocess, glob, os
 from worker_1 import fire_BEAM, bookkeep
+from config import *
 
 #sys.stdout=open("test.txt","w")     # if required to export the outputs to a file
 
-beam = '/home/ubuntu/beam'   
 BEAM_procs = []
 bookkeeping_procs = []
 

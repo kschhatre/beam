@@ -1,14 +1,13 @@
 # Author: Kiran Chhatre
 # Implementation 2 related
+
 from relativeFactoredNudges import getNudges
+from config import *
 import pandas as pd 
 import subprocess, os, shutil, glob, time
 
-# NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
-# paths
-shared = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage'
-beam = '/home/ubuntu/beam'
+# NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
 # iterator
 total_rel_nudge_trials = 36
@@ -32,10 +31,10 @@ def count_now():
 def create_conf_copies(no_iters, which_stage):    
     if which_stage == 8:
         for num in range(no_iters): 
-            shutil.copy(beam+'/test/input/sf-light/urbansim-10k.conf',beam+'/test/input/sf-light/urbansim-10k_'+str(num+2)+'.conf')  
+            shutil.copy(base_urbansim_config, copy_urbansim_config % (num+2))  
     else:
         for num in range(no_iters): 
-            shutil.copy(beam+'/test/input/sf-light/urbansim-10k.conf',beam+'/test/input/sf-light/urbansim-10k_'+str(which_stage-num)+'.conf')
+            shutil.copy(base_urbansim_config, copy_urbansim_config % (which_stage-num))
 
 def ext_change(param):
     if param == 'edit':
@@ -87,11 +86,11 @@ def vector(whichCounter):
 
 def find_op_folder(time_now, parallel_passes):  # increment op folder count
     output_folders = []
-    for i in range(len(glob.glob(beam+'/output/sf-light/*'))):
-        if time.ctime(os.path.getctime(glob.glob(beam+'/output/sf-light/*')[i])) < time_now:
+    for i in range(len(glob.glob(sf_light_dir))):
+        if time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) < time_now:
             pass 
-        elif time.ctime(os.path.getctime(glob.glob(beam+'/output/sf-light/*')[i])) > time_now: 
-            output_folders.append(glob.glob(beam+'/output/sf-light/*')[i]) if glob.glob(beam+'/output/sf-light/*')[i] not in output_folders else output_folders
+        elif time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) > time_now: 
+            output_folders.append(glob.glob(sf_light_dir)[i]) if glob.glob(sf_light_dir)[i] not in output_folders else output_folders
     if any( [not output_folders, len(output_folders) < parallel_passes] ):
         return find_op_folder(time_now, parallel_passes)
     else:
@@ -114,13 +113,13 @@ for i in range(len(counter)):
 
     for j in range(len(parallel_passes)):
         if which_stage == 8:
-            picked_conf_file = beam+'/test/input/sf-light/urbansim-10k_'+str(j+2)+'.conf' 
+            picked_conf_file = copy_urbansim_config % (j+2) 
             ext_change('edit')
-            filename = beam+'/test/input/sf-light/urbansim-10k_'+str(j+2)+'.txt'  
+            filename = copy_urbansim_txt % (j+2)  
         else:
-            picked_conf_file = beam+'/test/input/sf-light/urbansim-10k_'+str(which_stage-j)+'.conf'
+            picked_conf_file = copy_urbansim_config % (which_stage-j)
             ext_change('edit')
-            filename = beam+'/test/input/sf-light/urbansim-10k_'+str(which_stage-j)+'.txt' 
+            filename = copy_urbansim_txt % (which_stage-j) 
         change_conf(input_vector=input_vector[j])    
         ext_change('save') 
 
@@ -139,10 +138,10 @@ for i in range(len(counter)):
 def fire_BEAM(number):  
     import os
     print('BEAM fired on '+str(os.getpid())+' PID.')
-    picked_conf_file = beam+'/test/input/sf-light/urbansim-10k_'+str(number)+'.conf'   # label the file
-    with open(beam+"/instanceconfpath.txt", "w") as text_file: 
+    picked_conf_file = copy_urbansim_config % number   # label the file
+    with open(beam + "/instanceconfpath.txt", "w") as text_file: 
         text_file.write(picked_conf_file)
-    subprocess.call([beam+'/runme.sh'])
+    subprocess.call([runme])
 
 def bookkeep(which_stage):
     if which_stage == 1:
@@ -168,5 +167,5 @@ def bookkeep(which_stage):
         df.loc['Positive_Directionality'] =  df.loc['L1'].ge(0) 
         #df.loc['v_dIntercept'] = [0,0,0,0,0,0,0,0,0]
         total_L1 = df.loc['L1'].abs().sum()
-        df.to_csv(shared+'/'+str(j)+'_'+total_L1+'.csv', sep='\t', encoding='utf-8')   
+        df.to_csv(output_csv % (j, total_L1), sep='\t', encoding='utf-8')   
 
