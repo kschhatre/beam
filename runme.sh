@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file="/home/ubuntu/beam/instanceconfpath.txt"
+file="/home/ubuntu/kiran_thesis/beam/instanceconfpath.txt"
 
 conf_file=$(cat "$file")
 
