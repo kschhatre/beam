@@ -2,22 +2,18 @@
 # Implementation 2 related
 import os, subprocess, time, glob, csv
 import pandas as pd
+from config import *
 
 # KEEP ALL INTERCEPTS AS ZERO and KEEP OUTPUT FOLDER EMPTY!!
 
-beam_repo = '/home/ubuntu/beam'
-file_conf = '/home/ubuntu/beam/test/input/sf-light/urbansim-10k.conf'
-file_txt  = '/home/ubuntu/beam/test/input/sf-light/urbansim-10k.txt'
-shared    = '/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/storage' 
-
 ################################### Fire BEAM
-os.chdir(beam_repo) 
-subprocess.call(beam_repo+'/runme.sh')
-os.chdir('/home/ubuntu/beam/src/main/python/calibration/BEAMPyOpt/search-space-control')
+os.chdir(beam) 
+subprocess.call(runme)
+os.chdir(search_space)
 
 ################################### Bookkeeping phase
 
-out_dir = glob.glob(beam_repo+'/output/sf-light/*')
+out_dir = glob.glob(sf_light_dir)
 
 while not out_dir:
     time.sleep(1)
@@ -40,5 +36,4 @@ df.loc['Positive_Directionality'] =  df.loc['L1'].ge(0)
 total_L1 = df.loc['L1'].abs().sum()
 
 # intercepts_now, benchmark, modeshare_now, L1, L1_rank, Positive_Directionality
-df.to_csv(shared+'/'+'1_'+str(total_L1)+'.csv', sep='\t', encoding='utf-8')
-
+df.to_csv(output_csv % (1, total_L1), sep='\t', encoding='utf-8')
