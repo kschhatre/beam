@@ -2,19 +2,22 @@
 # Implementation 2 related
 from multiprocessing import Process
 import random, time, psutil, logging, sys, multiprocessing, subprocess, glob, os
-from worker_1 import fire_BEAM, bookkeep
+from worker_1 import fire_BEAM, bookkeep, recipe 
 from config import *
 
 #sys.stdout=open("test.txt","w")     # if required to export the outputs to a file
 
 BEAM_procs = []
 bookkeeping_procs = []
+recipe_procs = [] 
 
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 counter = list(range(len(rel_nudge_stages)+1))
 bookkeeping_iters = [7]+[4]*len(rel_nudge_stages) 
+
+o = Process(target=recipe, args=(counter)) 
 
 for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 4) and 1(for bookkeeping) procs
 
@@ -51,6 +54,9 @@ for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 
 for filename in glob.glob(beam+'/test/input/sf-light/urbansim-10k_*'):  
     os.remove(filename)
 '''
+
+for o in recipe_procs:
+   o.join() 
 
 for p in BEAM_procs:
    p.join()
