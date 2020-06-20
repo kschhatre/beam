@@ -1,4 +1,6 @@
 beam = '/home/ubuntu/kiran_thesis/beam'
+# alternative path for local repository
+#beam = '/home/berkeleylab/kiran_thesis/beam'
 
 shared = beam + '/src/main/python/calibration/BEAMPyOpt/storage' 
 search_space= beam + '/src/main/python/calibration/BEAMPyOpt/search-space-control'
