@@ -52,12 +52,12 @@ def change_conf(input_vector):
         file_text[i] = file_text[i].split('=',1)[0]+'= '
 
     file_text[p]   = file_text[p]  +str(input_vector[1]) #car_intercept
-    file_text[p+1] = file_text[p+1]+str(input_vector[8]) #walk_transit_intercept
-    file_text[p+2] = file_text[p+2]+str(input_vector[3]) #drive_transit_intercept
-    file_text[p+3] = file_text[p+3]+str(input_vector[6]) #ride_hail_transit_intercept
-    file_text[p+4] = file_text[p+4]+str(input_vector[4]) #ride_hail_intercept
-    file_text[p+5] = file_text[p+5]+str(input_vector[5]) #ride_hail_pooled_intercept
-    file_text[p+6] = file_text[p+6]+str(input_vector[7]) #walk_intercept
+    file_text[p+1] = file_text[p+1]+str(input_vector[7]) #walk_transit_intercept
+    file_text[p+2] = file_text[p+2]+str(input_vector[2]) #drive_transit_intercept
+    file_text[p+3] = file_text[p+3]+str(input_vector[5]) #ride_hail_transit_intercept
+    file_text[p+4] = file_text[p+4]+str(input_vector[3]) #ride_hail_intercept
+    file_text[p+5] = file_text[p+5]+str(input_vector[4]) #ride_hail_pooled_intercept
+    file_text[p+6] = file_text[p+6]+str(input_vector[6]) #walk_intercept
     file_text[p+7] = file_text[p+7]+str(input_vector[0]) #bike_intercept
         
     for j in range(p,p+8,1):
@@ -79,10 +79,16 @@ def change_conf(input_vector):
 
 def vector(whichCounter):
     input_vector = getNudges()  
-    if len(input_vector) == whichCounter:
+    if whichCounter == 8:
+        required = 7
+    else:
+        required = 4
+    if len(input_vector) == required:
         return input_vector
     else:
         return vector(whichCounter)  
+
+
 
 def find_op_folder(time_now, parallel_passes):  # increment op folder count
     output_folders = []
@@ -111,7 +117,7 @@ for i in range(len(counter)):
 
     create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
 
-    for j in range(len(parallel_passes)):
+    for j in range(parallel_passes):
         if which_stage == 8:
             picked_conf_file = copy_urbansim_config % (j+2) 
             ext_change('edit')
