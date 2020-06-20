@@ -105,40 +105,41 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-for i in range(len(counter)):
-    input_vector = vector(whichCounter=rel_nudge_stages[i])  
-    if len(input_vector) == 1:
-        parallel_passes = 7
-    else:
-        parallel_passes = 4
-
-    count_now()
-    which_stage = iteration_help[number] 
-
-    create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
-
-    for j in range(parallel_passes):
-        if which_stage == 8:
-            picked_conf_file = copy_urbansim_config % (j+2) 
-            ext_change('edit')
-            filename = copy_urbansim_txt % (j+2)  
+def recipe(counter):
+    for i in range(len(counter)):
+        input_vector = vector(whichCounter=rel_nudge_stages[i])  
+        if len(input_vector) == 1:
+            parallel_passes = 7
         else:
-            picked_conf_file = copy_urbansim_config % (which_stage-j)
-            ext_change('edit')
-            filename = copy_urbansim_txt % (which_stage-j) 
-        change_conf(input_vector=input_vector[j])    
-        ext_change('save') 
+            parallel_passes = 4
 
-    with open(beam+"/writecue.txt", "w") as text_file:
-        text_file.write('write stage '+str(i+1)+' done') 
+        count_now()
+        which_stage = iteration_help[number] 
 
-    while True: 
-        with open(beam+"/firecue.txt", 'r') as fin:  
-            file_text=fin.readlines()
-        print('Waiting for the fire cue...')
-        if file_text == 'fire '+str(i+1)+' done':
-            break
-    time_now_for_stages.append(time.ctime())
+        create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
+
+        for j in range(parallel_passes):
+            if which_stage == 8:
+                picked_conf_file = copy_urbansim_config % (j+2) 
+                ext_change('edit')
+                filename = copy_urbansim_txt % (j+2)  
+            else:
+                picked_conf_file = copy_urbansim_config % (which_stage-j)
+                ext_change('edit')
+                filename = copy_urbansim_txt % (which_stage-j) 
+            change_conf(input_vector=input_vector[j])    
+            ext_change('save') 
+
+        with open(beam+"/writecue.txt", "w") as text_file:
+            text_file.write('write stage '+str(i+1)+' done') 
+
+        while True: 
+            with open(beam+"/firecue.txt", 'r') as fin:  
+                file_text=fin.readlines()
+            print('Waiting for the fire cue...')
+            if file_text == 'fire '+str(i+1)+' done':
+                break
+        time_now_for_stages.append(time.ctime())
   
    
 def fire_BEAM(number):  
