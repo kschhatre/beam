@@ -18,6 +18,8 @@ counter = list(range(len(rel_nudge_stages)+1))
 bookkeeping_iters = [7]+[4]*len(rel_nudge_stages) 
 
 o = Process(target=recipe, args=(counter)) 
+o.start()
+recipe_procs.append(o)
 
 for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 4) and 1(for bookkeeping) procs
 
