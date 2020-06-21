@@ -55,4 +55,5 @@ src/main/scala/beam/sandbox
 test/scala/beam/sandbox
 log-path_IS_UNDEFINED/
 .Rproj.user
-__pycache__/
+*/__pycache__/
+*.pyc
