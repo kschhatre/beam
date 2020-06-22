@@ -6,6 +6,11 @@ from config import *
 
 # KEEP ALL INTERCEPTS AS ZERO and KEEP OUTPUT FOLDER EMPTY!!
 
+# Deleting shared o/p folder contents
+filelist = [ f for f in os.listdir(shared) ]
+for f in filelist:
+    os.remove(os.path.join(shared, f))
+
 ################################### Fire BEAM
 os.chdir(beam) 
 subprocess.call(runme)
