@@ -31,7 +31,7 @@ def getNudges():
         rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # [8, 12, 16, 20, 24, 28, 32, 36]
 
         for i in range(len(rel_nudge_stages)): 
-            last_needed_csv = glob.glob(shared+'/'+str(i)+'_*.csv')
+            last_needed_csv = glob.glob(shared+'/'+str(i)+'_*.csv')[0]
             while not os.path.exists(last_needed_csv):
                 time.sleep(1) 
                 print('In relativeFactoredNudges: waiting for the BEAM output csv...')
