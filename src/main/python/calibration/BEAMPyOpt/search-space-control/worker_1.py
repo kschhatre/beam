@@ -108,8 +108,8 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 def recipe():
     print('Recipe method initialized!')
     for i in range(len(counter)):
-        input_vector = vector(whichCounter=rel_nudge_stages[i])  
-        if len(input_vector) == 1:
+        input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
+        if len(input_vector_now) == 1:
             parallel_passes = 7
         else:
             parallel_passes = 4
