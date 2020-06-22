@@ -26,6 +26,7 @@ for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 
     while True:
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
+        time.sleep(2)
         print('Waiting for the write cue...')
         if file_text == 'write stage '+str(k+1)+' done': 
             break 
