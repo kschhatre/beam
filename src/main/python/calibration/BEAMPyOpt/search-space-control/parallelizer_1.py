@@ -17,7 +17,7 @@ rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 counter = list(range(len(rel_nudge_stages)+1))
 bookkeeping_iters = [7]+[4]*len(rel_nudge_stages) 
 
-o = Process(target=recipe, args=(counter)) 
+o = Process(target=recipe) 
 o.start()
 recipe_procs.append(o)
 

@@ -105,7 +105,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-def recipe(counter):
+def recipe():
     print('I entered the recipe method')
     for i in range(len(counter)):
         input_vector = vector(whichCounter=rel_nudge_stages[i])  
