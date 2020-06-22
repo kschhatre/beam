@@ -106,6 +106,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 # Recipe
 
 def recipe(counter):
+    print('I entered the recipe method')
     for i in range(len(counter)):
         input_vector = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector) == 1:
@@ -115,9 +116,9 @@ def recipe(counter):
 
         count_now()
         which_stage = iteration_help[number] 
-
+        
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
-
+        print('I have created the conf copies')
         for j in range(parallel_passes):
             if which_stage == 8:
                 picked_conf_file = copy_urbansim_config % (j+2) 
