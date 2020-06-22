@@ -106,7 +106,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 # Recipe
 
 def recipe():
-    print('I entered the recipe method')
+    print('Recipe method initialized!')
     for i in range(len(counter)):
         input_vector = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector) == 1:
@@ -118,7 +118,7 @@ def recipe():
         which_stage = iteration_help[number] 
         
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
-        print('I have created the conf copies')
+        print('Conf copies created!')
         for j in range(parallel_passes):
             if which_stage == 8:
                 picked_conf_file = copy_urbansim_config % (j+2) 
@@ -137,6 +137,7 @@ def recipe():
         while True: 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
+            time.sleep(2)
             print('Waiting for the fire cue...')
             if file_text == 'fire '+str(i+1)+' done':
                 break
@@ -161,6 +162,7 @@ def bookkeep(which_stage):
         out_file = output_folders[j] + '/referenceRealizedModeChoice.csv'
         while not os.path.exists(out_file):
             time.sleep(1) 
+            print('In bookkeep method: waiting for BEAM output...')
         if os.path.isfile(out_file):
             df =  pd.read_csv(out_file)
         else:  
