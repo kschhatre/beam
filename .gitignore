@@ -57,3 +57,4 @@ log-path_IS_UNDEFINED/
 .Rproj.user
 */__pycache__/*
 *.pyc
+*/storage/*
