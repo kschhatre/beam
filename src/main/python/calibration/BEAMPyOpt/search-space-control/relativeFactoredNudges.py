@@ -3,7 +3,6 @@
 import numpy as np 
 import pandas as pd 
 import itertools, glob, fnmatch, os, random, csv
-from modify_csv import modify_csv
 import warnings
 from config import *
 
@@ -12,8 +11,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def getNudges():
     input_vector = []
     if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == 1):
-        csv_name = glob.glob(shared+'/1_*.csv')[0]
-        modify_csv(csv_name=csv_name)   
+        csv_name = glob.glob(shared+'/1_*.csv')[0]  
         df =  pd.read_csv(csv_name)    
         for j in range(7): 
             vector_4_gradients = []
