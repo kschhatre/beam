@@ -57,4 +57,4 @@ log-path_IS_UNDEFINED/
 .Rproj.user
 */__pycache__/*
 *.pyc
-*/storage/*
+src/main/python/calibration/BEAMPyOpt/storage/
