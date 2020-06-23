@@ -5,6 +5,7 @@ from relativeFactoredNudges import getNudges
 from config import *
 import pandas as pd 
 import subprocess, os, shutil, glob, time
+from modify_csv import modify_csv
 
 
 # NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
@@ -178,4 +179,6 @@ def bookkeep(which_stage):
         #df.loc['v_dIntercept'] = [0,0,0,0,0,0,0,0,0]
         total_L1 = df.loc['L1'].abs().sum()
         df.to_csv(output_csv % (j, total_L1), sep='\t', encoding='utf-8')   
+        csv_name = output_csv % (j, total_L1)
+        modify_csv(csv_name=csv_name)
 
