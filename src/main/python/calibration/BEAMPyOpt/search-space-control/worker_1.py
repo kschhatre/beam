@@ -36,7 +36,7 @@ def create_conf_copies(no_iters, which_stage):
         for num in range(no_iters): 
             shutil.copy(base_urbansim_config, copy_urbansim_config % (which_stage-num))
 
-def ext_change(param):
+def ext_change(param, picked_conf_file, filename):
     if param == 'edit':
         os.rename(picked_conf_file, picked_conf_file[:-4] + 'txt')    
     elif param == 'save':  
@@ -122,14 +122,14 @@ def recipe():
         for j in range(parallel_passes):
             if which_stage == 8:
                 picked_conf_file = copy_urbansim_config % (j+2) 
-                ext_change('edit')
                 filename = copy_urbansim_txt % (j+2)  
+                ext_change('edit', picked_conf_file, filename)
             else:
                 picked_conf_file = copy_urbansim_config % (which_stage-j)
-                ext_change('edit')
                 filename = copy_urbansim_txt % (which_stage-j) 
+                ext_change('edit', picked_conf_file, filename)
             change_conf(input_vector=input_vector[j])    
-            ext_change('save') 
+            ext_change('save', picked_conf_file, filename) 
 
         with open(beam+"/writecue.txt", "w") as text_file:
             text_file.write('write stage '+str(i+1)+' done') 
