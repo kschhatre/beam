@@ -129,7 +129,7 @@ def recipe():
                 picked_conf_file = copy_urbansim_config % (which_stage-j)
                 filename = copy_urbansim_txt % (which_stage-j) 
                 ext_change('edit', picked_conf_file, filename)
-            change_conf(input_vector=input_vector[j])    
+            change_conf(input_vector=input_vector_now)     
             ext_change('save', picked_conf_file, filename) 
 
         with open(beam+"/writecue.txt", "w") as text_file:
