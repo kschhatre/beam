@@ -6,4 +6,5 @@ def modify_csv(csv_name):
     writer = csv.writer(open(shared+'/output.csv', 'w'), delimiter=',')   
     writer.writerows(reader) 
     os.remove(csv_name)  
-    os.rename(shared+'/output.csv', shared+'/'+csv_name[34:])  
+    num = 77 # if on develop branch else 64
+    os.rename(shared+'/output.csv', shared+'/'+csv_name[num:])  
