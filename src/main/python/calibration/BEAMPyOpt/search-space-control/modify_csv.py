@@ -6,5 +6,5 @@ def modify_csv(csv_name):
     writer = csv.writer(open(shared+'/output.csv', 'w'), delimiter=',')   
     writer.writerows(reader) 
     os.remove(csv_name)  
-    num = 77 # if on develop branch else 64
+    num = 77 # if on develop branch else 64 if main branch '/home/ubuntu/kiran_thesis/beam'
     os.rename(shared+'/output.csv', shared+'/'+csv_name[num:])  
