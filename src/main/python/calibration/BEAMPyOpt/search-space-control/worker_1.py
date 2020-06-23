@@ -17,7 +17,7 @@ counter = list(range(len(rel_nudge_stages)+1))
 
 # constants
 finaliteration = '0'
-number = 0
+number = -1
 iteration_help = list(range(8,37,4))
 p = 25 # intercepts
 q = 13 # last iterations
