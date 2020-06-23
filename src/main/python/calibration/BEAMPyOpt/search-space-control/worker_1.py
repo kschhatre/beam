@@ -137,7 +137,7 @@ def recipe():
         while True: 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
-            time.sleep(2)
+            time.sleep(10)
             print('Waiting for the fire cue...')
             if file_text == 'fire '+str(i+1)+' done':
                 break
