@@ -2,6 +2,7 @@
 # Implementation 2 related
 import os, subprocess, time, glob, csv
 import pandas as pd
+from modify_csv import modify_csv
 from config import *
 
 # KEEP ALL INTERCEPTS AS ZERO and KEEP OUTPUT FOLDER EMPTY!!
@@ -42,3 +43,5 @@ total_L1 = df.loc['L1'].abs().sum()
 
 # intercepts_now, benchmark, modeshare_now, L1, L1_rank, Positive_Directionality
 df.to_csv(output_csv % (1, total_L1), sep='\t', encoding='utf-8')
+csv_name = output_csv % (1, total_L1)
+modify_csv(csv_name=csv_name)
