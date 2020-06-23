@@ -12,13 +12,11 @@ from modify_csv import modify_csv
 
 # iterator
 total_rel_nudge_trials = 36
-rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
-counter = list(range(len(rel_nudge_stages)+1))
+rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # 8, 12, 16, 20, 24, 28, 32, 36
 
 # constants
 finaliteration = '0'
 number = -1
-iteration_help = list(range(8,37,4))
 p = 25 # intercepts
 q = 13 # last iterations
 time_now_for_stages = []
@@ -31,10 +29,10 @@ def count_now():
 
 def create_conf_copies(no_iters, which_stage):    
     if which_stage == 8:
-        for num in range(no_iters): 
+        for num in range(no_iters): # no_iters = 7
             shutil.copy(base_urbansim_config, copy_urbansim_config % (num+2))  
-    else:
-        for num in range(no_iters): 
+    else: # which_stage is 12, 16, 20, 24, 28, 32, 36
+        for num in range(no_iters): # no_iters = 4
             shutil.copy(base_urbansim_config, copy_urbansim_config % (which_stage-num))
 
 def ext_change(param, picked_conf_file, filename):
@@ -43,7 +41,7 @@ def ext_change(param, picked_conf_file, filename):
     elif param == 'save':  
         os.rename(filename, filename[:-3] + 'conf')
 
-def change_conf(input_vector):
+def change_conf(input_vector, filename):
     with open(filename, 'r') as fin: 
         file_text=fin.readlines()
 
@@ -108,15 +106,15 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 def recipe():
     print('Recipe method initialized!')
-    for i in range(len(counter)):
+    for i in range(len(rel_nudge_stages)):
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
-        if len(input_vector_now) == 1:
+        if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
             parallel_passes = 7
-        else:
+        else: # len(input_vector_now) == 4
             parallel_passes = 4
 
         count_now()
-        which_stage = iteration_help[number] 
+        which_stage = rel_nudge_stages[number] 
         
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
         print('Conf copies created!')
@@ -129,7 +127,7 @@ def recipe():
                 picked_conf_file = copy_urbansim_config % (which_stage-j)
                 filename = copy_urbansim_txt % (which_stage-j) 
                 ext_change('edit', picked_conf_file, filename)
-            change_conf(input_vector=input_vector_now)     
+            change_conf(input_vector=input_vector_now, filename=filename)     
             ext_change('save', picked_conf_file, filename) 
 
         with open(beam+"/writecue.txt", "w") as text_file:
