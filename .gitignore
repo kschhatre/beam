@@ -58,3 +58,4 @@ log-path_IS_UNDEFINED/
 */__pycache__/*
 *.pyc
 src/main/python/calibration/BEAMPyOpt/storage/
+test/input/sf-light/urbansim-10k_*.conf
