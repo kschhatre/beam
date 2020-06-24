@@ -120,7 +120,7 @@ def recipe():
             pass
         else:
             while True:
-                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) >= rel_nudge_stages[i-1]):
+                if len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1:
                     break 
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
@@ -157,11 +157,12 @@ def recipe():
                     break 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
-            time.sleep(10)
+            time.sleep(5)
             print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
         time_now_for_stages.append(time.ctime())
+        print('Complete stage '+str(i+1)+' fired at time: '+str(time_now_for_stages[i])) 
   
    
 def fire_BEAM(number):  
@@ -180,13 +181,13 @@ def bookkeep(which_stage):
     else:
         how_many = 4 
     while True:
-        if len(time_now_for_stages) >= which_stage:
+        if len(time_now_for_stages) > which_stage-1: 
             break
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
     for j in range(len(output_folders)):
         out_file = output_folders[j] + '/referenceRealizedModeChoice.csv'
         while not os.path.exists(out_file):
-            time.sleep(1) 
+            time.sleep(5) 
             print('In bookkeep method: waiting for BEAM output...')
         if os.path.isfile(out_file):
             df =  pd.read_csv(out_file)
@@ -202,7 +203,13 @@ def bookkeep(which_stage):
         df.loc['Positive_Directionality'] =  df.loc['L1'].ge(0) 
         #df.loc['v_dIntercept'] = [0,0,0,0,0,0,0,0,0]
         total_L1 = df.loc['L1'].abs().sum()
-        df.to_csv(output_csv % (j, total_L1), sep='\t', encoding='utf-8')   
-        csv_name = output_csv % (j, total_L1)
-        modify_csv(csv_name=csv_name)
-
+        if which_stage == 1:
+            df.to_csv(output_csv % (j+2, total_L1), sep='\t', encoding='utf-8')   
+            csv_name = output_csv % (j+2, total_L1) 
+            modify_csv(csv_name=csv_name)
+        else:
+            offset_labeling_list = list(range(7,50,3)) 
+            iter_label = offset_labeling_list[which_stage-2] + int(which_stage) + j 
+            df.to_csv(output_csv % (iter_label, total_L1), sep='\t', encoding='utf-8')   
+            csv_name = output_csv % (iter_label, total_L1) 
+            modify_csv(csv_name=csv_name) 
