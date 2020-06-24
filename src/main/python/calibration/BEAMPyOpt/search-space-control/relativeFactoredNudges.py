@@ -11,6 +11,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def getNudges():
     input_vector = []
     if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == 1):
+        print('Creating nudges for stage 1...')
         csv_name = glob.glob(shared+'/1_*.csv')[0]  
         df =  pd.read_csv(csv_name)
         for j in range(7): 
