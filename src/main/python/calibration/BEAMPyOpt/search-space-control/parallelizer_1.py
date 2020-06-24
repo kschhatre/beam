@@ -1,7 +1,7 @@
 # Author: Kiran Chhatre
 # Implementation 2 related
 from multiprocessing import Process
-import random, time, psutil, logging, sys, multiprocessing, subprocess, glob, os
+import random, time, psutil, logging, sys, multiprocessing, subprocess, glob, os, fnmatch
 from worker_1 import fire_BEAM, bookkeep, recipe 
 from config import *
 
@@ -43,6 +43,12 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
             which_conf = int(m + 2)   
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
+        if k == 0:
+            pass
+        else:
+            while True:
+                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) >= rel_nudge_stages[k-1]):
+                    break 
         print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'!') 
         p = Process(target=fire_BEAM, args=(which_conf,))
         p.start()
@@ -52,7 +58,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
     with open(beam+"/firecue.txt", "w") as text_file: 
         text_file.write('fire '+str(k+1)+' done')    
 
-    print('Bookkeeping method initialized at stage '+str(k)+'!')
+    print('Bookkeeping method initialized at stage '+str(k+1)+'!')
     q = Process(target=bookkeep, args=(int(k+1),))  
     q.start()
     bookkeeping_procs.append(q) 
