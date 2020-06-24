@@ -160,17 +160,22 @@ def recipe():
    
 def fire_BEAM(number):  
     import os
-    print('BEAM fired on '+str(os.getpid())+' PID.')
     picked_conf_file = copy_urbansim_config % number   # label the file
     with open(beam + "/instanceconfpath.txt", "w") as text_file: 
         text_file.write(picked_conf_file)
+    os.chdir(beam)
     subprocess.call([runme])
+    os.chdir(search_space)
+    print('BEAM fired on '+str(os.getpid())+' PID.')
 
 def bookkeep(which_stage):
     if which_stage == 1:
         how_many = 7
     else:
         how_many = 4 
+    while True:
+        if len(time_now_for_stages) >= which_stage:
+            break
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
     for j in range(len(output_folders)):
         out_file = output_folders[j] + '/referenceRealizedModeChoice.csv'
