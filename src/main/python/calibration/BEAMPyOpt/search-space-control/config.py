@@ -14,3 +14,6 @@ sf_light_dir = beam + '/output/sf-light/*'
 output_csv=f'/{shared}/%d_%d.csv'
 
 runme=beam + '/runme.sh'
+
+writecue = beam + '/writecue.txt'
+firecue = beam + '/firecue.txt'
