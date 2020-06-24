@@ -60,5 +60,4 @@ log-path_IS_UNDEFINED/
 src/main/python/calibration/BEAMPyOpt/storage/
 test/input/sf-light/urbansim-10k_*
 instanceconfpath.txt
-firecue.txt
-writecue.txt
+*.txt
