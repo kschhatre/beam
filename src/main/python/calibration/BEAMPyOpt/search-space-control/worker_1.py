@@ -16,16 +16,11 @@ rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # 8, 12, 16, 20, 24
 
 # constants
 finaliteration = '0'
-number = -1
 p = 25 # intercepts
 q = 13 # last iterations
 time_now_for_stages = []
 
 # Methods
-
-def count_now():
-    global number 
-    number += 1
 
 def create_conf_copies(no_iters, which_stage):    
     if which_stage == 8:
@@ -114,8 +109,7 @@ def recipe():
         else: # len(input_vector_now) == 4
             parallel_passes = 4
 
-        count_now()
-        which_stage = rel_nudge_stages[number] 
+        which_stage = rel_nudge_stages[i] 
         
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
         print('Conf copies created!')
@@ -128,8 +122,8 @@ def recipe():
                 picked_conf_file = copy_urbansim_config % (which_stage-j)
                 filename = copy_urbansim_txt % (which_stage-j) 
                 ext_change('edit', picked_conf_file, filename)
-            change_conf(input_vector=input_vector_now, filename=filename)     
-            ext_change('save', picked_conf_file, filename) 
+            change_conf(input_vector=input_vector_now[j], filename=filename)     
+            ext_change('save', picked_conf_file, filename)   
 
         with open(beam+"/writecue.txt", "w") as text_file:
             text_file.write('write stage '+str(i+1)+' done') 
