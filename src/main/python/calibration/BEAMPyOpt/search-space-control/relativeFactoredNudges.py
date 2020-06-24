@@ -29,10 +29,10 @@ def getNudges():
         rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # [8, 12, 16, 20, 24, 28, 32, 36]
 
         for i in range(len(rel_nudge_stages)): 
-            last_needed_csv = glob.glob(shared+'/'+str(i)+'_*.csv')[0]
+            last_needed_csv = glob.glob(shared+'/'+str(rel_nudge_stages[i])+'_*.csv')[0]
             while not os.path.exists(last_needed_csv):
                 time.sleep(1) 
-                print('In relativeFactoredNudges: waiting for the BEAM output csv...')
+                print('In relativeFactoredNudges: waiting for the last BEAM output csv...')
             if os.path.isfile(last_needed_csv):
                 if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i]):
                     # example if last needed csv = 8, we will compute nudges for 9,10,11,12 trails from (1,2),(3,4),(5,6), and (7,8) pairs.
