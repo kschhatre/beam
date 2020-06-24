@@ -31,7 +31,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
                 break
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
-        time.sleep(2)
+        time.sleep(5)
         print('Waiting for the write cue...')
         if file_text[0] == 'write stage '+str(k+1)+' done': 
             break 
@@ -47,17 +47,10 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
             which_conf = int(m + 2)   
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
-        if k == 0:
-            pass
-        else:
-            while True:
-                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) >= rel_nudge_stages[k-1]):
-                    break 
         print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'!') 
         p = Process(target=fire_BEAM, args=(which_conf,))
         p.start()
         BEAM_procs.append(p)
-    print('all BEAM runs for stage '+str(k+1)+' fired!')  
 
     with open(beam+"/firecue.txt", "w") as text_file: 
         text_file.write('fire '+str(k+1)+' done')    
