@@ -49,6 +49,7 @@ def change_conf(input_vector, filename):
 
     for i in range(p,p+8,1):               
         file_text[i] = file_text[i].split('=',1)[0]+'= '
+    print(input_vector)
 
     file_text[p]   = file_text[p]  +str(input_vector[1]) #car_intercept
     file_text[p+1] = file_text[p+1]+str(input_vector[7]) #walk_transit_intercept
