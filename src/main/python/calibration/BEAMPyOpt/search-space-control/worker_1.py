@@ -16,7 +16,7 @@ rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # 8, 12, 16, 20, 24
 
 # constants
 finaliteration = '0'
-p = 25 # intercepts
+p = 24 # intercepts
 q = 13 # last iterations
 time_now_for_stages = []
 
@@ -45,6 +45,21 @@ def change_conf(input_vector, filename):
     for i in range(p,p+8,1):               
         file_text[i] = file_text[i].split('=',1)[0]+'= '
     print(input_vector)
+
+    '''
+    MATCHING INDICES FROM MEMORY BANK CSVS TO CONF MODE CHOICES:
+    Output CSV:
+    bike,car,drive_transit,ride_hail,ride_hail_pooled,ride_hail_transit,walk,walk_transit
+    0    1   2             3         4                5                 6    7              
+    CONF:
+    car,walk_transit,drive_transit,ride_hail_transit,ride_hail,ride_hail_pooled,walk,bike
+    0   1            2             3                 4         5                6    7
+    Line number in Conf file:
+    25  26           27            28                29        30               31   32
+    file_text index will be: line number in conf - 1
+    required input_vector indices:
+    1   7            2             5                 3         4                6    0
+    '''
 
     file_text[p]   = file_text[p]  +str(input_vector[1]) #car_intercept
     file_text[p+1] = file_text[p+1]+str(input_vector[7]) #walk_transit_intercept
