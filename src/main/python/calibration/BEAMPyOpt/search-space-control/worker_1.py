@@ -116,6 +116,12 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 def recipe():
     for i in range(len(rel_nudge_stages)):
+        if i == 0:
+            pass
+        else:
+            while True:
+                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) >= rel_nudge_stages[i-1]):
+                    break 
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
