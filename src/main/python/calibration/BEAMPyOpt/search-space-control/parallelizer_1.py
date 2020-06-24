@@ -14,14 +14,12 @@ recipe_procs = []
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
-counter = list(range(len(rel_nudge_stages)+1))
-bookkeeping_iters = [7]+[4]*len(rel_nudge_stages) 
 
 o = Process(target=recipe) 
 o.start()
 recipe_procs.append(o)
 
-for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 4) and 1(for bookkeeping) procs
+for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel pass 7 or 4) and 1(for bookkeeping) procs
 
     while True:
         with open(beam+"/writecue.txt", 'r') as fin: 
@@ -38,17 +36,20 @@ for k in range(len(counter)): # per stage start x=(number of parallel pass 7 or 
 
     for m in range(len(parallel_passes)):               
         #multiprocessing.log_to_stderr(logging.DEBUG)
-        if parallel_passes == 7:
-            which_conf = int(m + 1)  
+        if len(parallel_passes) == 7: 
+            which_conf = int(m + 2)   
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
+        print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'!') 
         p = Process(target=fire_BEAM, args=(which_conf))
         p.start()
         BEAM_procs.append(p)
+        print('all BEAM runs for stage '+str(k+1)+' fired!')  
 
     with open(beam+"/firecue.txt", "w") as text_file: 
         text_file.write('fire '+str(k+1)+' done')    
 
+    print('Bookkeeping method initialized at stage '+str(m)+'!')
     q = Process(target=bookkeep, args=(int(k+1)))  
     q.start()
     bookkeeping_procs.append(q) 
