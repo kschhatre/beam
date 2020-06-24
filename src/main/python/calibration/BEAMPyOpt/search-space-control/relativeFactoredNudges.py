@@ -32,7 +32,7 @@ def getNudges():
         for i in range(len(rel_nudge_stages)): 
             last_needed_csv = glob.glob(shared+'/'+str(rel_nudge_stages[i])+'_*.csv')[0]
             while not os.path.exists(last_needed_csv):
-                time.sleep(1) 
+                time.sleep(5)  
                 print('In relativeFactoredNudges: waiting for the last BEAM output csv...')
             if os.path.isfile(last_needed_csv):
                 if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i]):
