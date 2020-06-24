@@ -22,6 +22,9 @@ recipe_procs.append(o)
 for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel pass 7 or 4) and 1(for bookkeeping) procs
 
     while True:
+        while True:
+            if os.path.getsize(beam+"/writecue.txt") > 0:
+                break
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
         time.sleep(2)

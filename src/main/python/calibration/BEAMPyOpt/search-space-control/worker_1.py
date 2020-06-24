@@ -146,10 +146,13 @@ def recipe():
             text_file.write('write stage '+str(i+1)+' done') 
 
         while True: 
+            while True:
+                if os.path.getsize(beam+"/firecue.txt") > 0:
+                    break 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
             time.sleep(10)
-            print('Waiting for the fire cue...')
+            print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
         time_now_for_stages.append(time.ctime())
