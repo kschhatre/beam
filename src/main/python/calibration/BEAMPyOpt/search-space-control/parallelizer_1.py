@@ -7,6 +7,10 @@ from config import *
 
 #sys.stdout=open("test.txt","w")     # if required to export the outputs to a file
 
+# clearing writecue/ firecue file contents
+open(writecue, 'w').close()
+open(firecue, 'w').close() 
+
 BEAM_procs = []
 bookkeeping_procs = []
 recipe_procs = [] 
