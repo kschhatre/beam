@@ -44,7 +44,6 @@ def change_conf(input_vector, filename):
 
     for i in range(p,p+8,1):               
         file_text[i] = file_text[i].split('=',1)[0]+'= '
-    print(input_vector)
 
     '''
     MATCHING INDICES FROM MEMORY BANK CSVS TO CONF MODE CHOICES:
