@@ -44,7 +44,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
         print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'!') 
-        p = Process(target=fire_BEAM, args=(which_conf))
+        p = Process(target=fire_BEAM, args=(which_conf,))
         p.start()
         BEAM_procs.append(p)
         print('all BEAM runs for stage '+str(k+1)+' fired!')  
@@ -53,7 +53,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         text_file.write('fire '+str(k+1)+' done')    
 
     print('Bookkeeping method initialized at stage '+str(m)+'!')
-    q = Process(target=bookkeep, args=(int(k+1)))  
+    q = Process(target=bookkeep, args=(int(k+1),))  
     q.start()
     bookkeeping_procs.append(q) 
 
