@@ -150,7 +150,7 @@ def recipe():
                 file_text=fin.readlines()
             time.sleep(10)
             print('Waiting for the fire cue...')
-            if file_text == 'fire '+str(i+1)+' done':
+            if file_text[0] == 'fire '+str(i+1)+' done':
                 break
         time_now_for_stages.append(time.ctime())
   

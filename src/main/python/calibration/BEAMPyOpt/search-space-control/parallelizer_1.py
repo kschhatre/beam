@@ -26,7 +26,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
             file_text=fin.readlines()
         time.sleep(2)
         print('Waiting for the write cue...')
-        if file_text == 'write stage '+str(k+1)+' done': 
+        if file_text[0] == 'write stage '+str(k+1)+' done': 
             break 
 
     if k == 0:
