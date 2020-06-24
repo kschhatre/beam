@@ -102,7 +102,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 def recipe():
     for i in range(len(rel_nudge_stages)):
-        print('Recipe method initialized at stage '+str(i)+'!') 
+        print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
             parallel_passes = 7
@@ -112,7 +112,7 @@ def recipe():
         which_stage = rel_nudge_stages[i] 
         
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
-        print('Conf copies created for stage '+str(i)+'!')
+        print('Conf copies created for stage '+str(i+1)+'!') 
         for j in range(parallel_passes):
             if which_stage == 8:
                 picked_conf_file = copy_urbansim_config % (j+2) 
@@ -122,9 +122,12 @@ def recipe():
                 picked_conf_file = copy_urbansim_config % (which_stage-j)
                 filename = copy_urbansim_txt % (which_stage-j) 
                 ext_change('edit', picked_conf_file, filename)
+            print('Input vector at stage '+str(i+1)+'.'+str(j+1)+' is:') 
+            print(input_vector_now[j])
             change_conf(input_vector=input_vector_now[j], filename=filename)     
             ext_change('save', picked_conf_file, filename)   
 
+        print('All conf files ready for stage '+str(i+1)+'!') 
         with open(beam+"/writecue.txt", "w") as text_file:
             text_file.write('write stage '+str(i+1)+' done') 
 
