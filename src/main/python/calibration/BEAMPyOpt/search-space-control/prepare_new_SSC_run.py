@@ -7,9 +7,9 @@ import os, subprocess, glob
 3. Deletes all files except 1_*.csv from the storage folder
 '''
 
-for item in os.listdir(beam+'/'):
+for item in os.listdir(beam):
     if item.endswith(".log"): 
-        os.remove(os.path.join(dir_name, item)) # point 1
+        os.remove(os.path.join(beam, item)) # point 1
 
 for filename in glob.glob(sf_light_ip_dir+'/urbansim-10k_*'):
     os.remove(filename) # point 2
