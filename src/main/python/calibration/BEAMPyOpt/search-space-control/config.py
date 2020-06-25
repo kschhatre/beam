@@ -9,6 +9,8 @@ base_urbansim_config = beam+ '/test/input/sf-light/urbansim-10k.conf'
 copy_urbansim_config = beam+ '/test/input/sf-light/urbansim-10k_%d.conf'
 copy_urbansim_txt = beam +'/test/input/sf-light/urbansim-10k_%d.txt'
 
+sf_light_ip_dir = beam + '/test/input/sf-light' 
+
 sf_light_dir = beam + '/output/sf-light/*'
 
 output_csv=f'/{shared}/%d_%d.csv'
