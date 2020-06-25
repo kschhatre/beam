@@ -120,9 +120,9 @@ def recipe():
             pass
         else:
             while True:
+                print('Recipe method waiting to validate required number of csv files before calling the relativeFactoredNudges() at stage '+str(i+1)+' ...')
                 if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
-                    break 
-                    print('Recipe method waiting to validate required number of csv files before calling the relativeFactoredNudges() at stage '+str(i+1))
+                    break    
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
@@ -153,6 +153,7 @@ def recipe():
             text_file.write('write stage '+str(i+1)+' done') 
 
         while True: 
+            print('Checking firecue file content size...')
             while True:
                 if os.path.getsize(beam+"/firecue.txt") > 0:
                     break 
@@ -182,6 +183,7 @@ def bookkeep(which_stage):
     else:
         how_many = 4 
     while True:
+        print('Inside bookkeep(): checking if required CSVs have been generated...')
         if len(time_now_for_stages) > which_stage-1: 
             break
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
