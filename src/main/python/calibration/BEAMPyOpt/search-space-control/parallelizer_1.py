@@ -14,12 +14,13 @@ open(firecue, 'w').close()
 BEAM_procs = []
 bookkeeping_procs = []
 recipe_procs = [] 
+time_now_for_stages = []
 
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 
-o = Process(target=recipe) 
+o = Process(target=recipe, args=(time_now_for_stages,)) 
 o.start()
 recipe_procs.append(o)
 
@@ -56,7 +57,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         text_file.write('fire '+str(k+1)+' done')    
 
     print('Bookkeeping method initialized at stage '+str(k+1)+'!')
-    q = Process(target=bookkeep, args=(int(k+1),))  
+    q = Process(target=bookkeep, args=(int(k+1),time_now_for_stages,))  
     q.start()
     bookkeeping_procs.append(q) 
 
