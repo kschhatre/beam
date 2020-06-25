@@ -1,5 +1,5 @@
 from config import *
-import os, subprocess, contextlib
+import os, subprocess
 
 '''
 1. Deletes all *.log file in BEAM dir
@@ -7,9 +7,11 @@ import os, subprocess, contextlib
 3. Deletes all files except 1_*.csv from the storage folder
 '''
 
-with contextlib.suppress(FileNotFoundError):
+try:
     os.remove(beam+'/*.log') # point 1
-    os.remove(sf_light_ip_dir+'/urbansim-10k_*') # point 2 
+    os.remove(sf_light_ip_dir+'/urbansim-10k_*') # point 2
+except OSError:
+    pass
 
 os.chdir(shared)
 bashCommand = "find . \! -name '1_*.csv' -a \! -name '*.py' -a \! -type d -delete"
