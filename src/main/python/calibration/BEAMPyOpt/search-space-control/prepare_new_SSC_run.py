@@ -7,13 +7,11 @@ import os, subprocess
 3. Deletes all files except 1_*.csv from the storage folder
 '''
 
-try:
-    os.remove(beam+'/*.log') # point 1
-    os.remove(sf_light_ip_dir+'/urbansim-10k_*') # point 2
-except OSError:
-    pass
+os.remove(beam+'/*.log') # point 1
+os.remove(sf_light_ip_dir+'/urbansim-10k_*') # point 2
 
 os.chdir(shared)
 bashCommand = "find . \! -name '1_*.csv' -a \! -name '*.py' -a \! -type d -delete"
 subprocess.Popen(bashCommand, shell=True, executable='/bin/bash') # point 3
 os.chdir(search_space)
+print('Ready for a fresh SSC run!')
