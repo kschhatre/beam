@@ -122,6 +122,7 @@ def recipe():
             while True:
                 if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
                     break 
+                    print('Recipe method waiting to validate required number of csv files before calling the relativeFactoredNudges() at stage '+str(i+1))
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
