@@ -51,7 +51,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         p = Process(target=fire_BEAM, args=(which_conf,))
         p.start()
         BEAM_procs.append(p)
-
+    print('All BEAM runs for stage '+str(k+1)+' has been fired!')
     with open(beam+"/firecue.txt", "w") as text_file: 
         text_file.write('fire '+str(k+1)+' done')    
 
