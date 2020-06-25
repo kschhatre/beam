@@ -120,6 +120,7 @@ def recipe():
             pass
         else:
             while True:
+                time.sleep(5)
                 print('Recipe method waiting to validate required number of csv files before calling the relativeFactoredNudges() at stage '+str(i+1)+' ...')
                 if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
                     break    
@@ -183,6 +184,7 @@ def bookkeep(which_stage):
     else:
         how_many = 4 
     while True:
+        time.sleep(5)
         print('Inside bookkeep(): checking if required CSVs have been generated...')
         if len(time_now_for_stages) > which_stage-1: 
             break
