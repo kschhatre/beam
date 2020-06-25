@@ -115,6 +115,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 # Recipe
 
 def recipe():
+    global time_now_for_stages
     for i in range(len(rel_nudge_stages)):
         if i == 0:
             pass
@@ -165,6 +166,7 @@ def recipe():
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
         time_now_for_stages.append(time.ctime())
+        print('Contents of time-list are ',time_now_for_stages)
         print('Complete stage '+str(i+1)+' fired at time: '+str(time_now_for_stages[i])) 
   
    
@@ -179,6 +181,7 @@ def fire_BEAM(number):
     os.chdir(search_space)
 
 def bookkeep(which_stage):
+    global time_now_for_stages
     if which_stage == 1:
         how_many = 7
     else:
@@ -186,6 +189,7 @@ def bookkeep(which_stage):
     while True:
         time.sleep(5)
         print('Inside bookkeep(): checking if required optimization stage has been fired...')
+        print('Time-list has now contents:', time_now_for_stages)
         if len(time_now_for_stages) > which_stage-1: 
             break
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
