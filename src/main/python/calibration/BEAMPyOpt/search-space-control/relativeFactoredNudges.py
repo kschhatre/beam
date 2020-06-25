@@ -8,7 +8,7 @@ from config import *
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-def getNudges():
+def getNudges(whichCounter):
     input_vector = []
     if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == 1):
         print('Creating nudges for stage 1...')
@@ -30,21 +30,21 @@ def getNudges():
         rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # [8, 12, 16, 20, 24, 28, 32, 36]
 
         for i in range(len(rel_nudge_stages)): 
-            last_needed_csv = glob.glob(shared+'/'+str(rel_nudge_stages[i])+'_*.csv')[0]
+            last_needed_csv = glob.glob(shared+'/'+str(whichCounter)+'_*.csv')[0] 
             while not os.path.exists(last_needed_csv):
                 time.sleep(5)  
-                print('In relativeFactoredNudges: waiting for the last BEAM output csv...')
+                print('In relativeFactoredNudges: waiting for the last BEAM output csv...') 
             if os.path.isfile(last_needed_csv):
-                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i]):
-                    # example if last needed csv = 8, we will compute nudges for 9,10,11,12 trails from (1,2),(3,4),(5,6), and (7,8) pairs.
+                if (len(fnmatch.filter(os.listdir(shared), '*.csv')) == int(whichCounter)):
+                    # example if last needed csv = 8, we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
                     #input_vector = i+1 i+2 i+3 i+4
                     #prev = i-7 i-6 i-5 i-4
-                    #next = i-3 i-2 i-1 i
+                    #next = i-3 i-2 i-1 i 
                     iterators_ip_vec, iterators_prev, iterators_next = list(range(1,5)), list(range(7,3,-1)), list(range(3,-1,-1))
 
                     for i in range(len(iterators_ip_vec)):
-                        df_prev =  pd.read_csv(glob.glob(shared+'/'+str(iterators_prev[i])+'_*.csv'))
-                        df_next =  pd.read_csv(glob.glob(shared+'/'+str(iterators_next[i])+'_*.csv')) 
+                        df_prev =  pd.read_csv(glob.glob(shared+'/'+str(iterators_prev[i])+'_*.csv')[0])
+                        df_next =  pd.read_csv(glob.glob(shared+'/'+str(iterators_next[i])+'_*.csv')[0]) 
                         #df_next.loc[4] is  row and df_next.iloc[:,4] is column
                         Rank_L1_df = df_next.loc[3:4].T
                         fetch_ratios = {}
