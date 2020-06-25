@@ -87,7 +87,7 @@ def change_conf(input_vector, filename):
             fini.write(i)
 
 def vector(whichCounter):
-    input_vector = getNudges()  
+    input_vector = getNudges(whichCounter)  
     if whichCounter == 8:
         required = 7
     else:
