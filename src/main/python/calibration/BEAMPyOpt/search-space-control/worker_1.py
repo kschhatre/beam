@@ -18,7 +18,6 @@ rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # 8, 12, 16, 20, 24
 finaliteration = '0'
 p = 24 # intercepts
 q = 13 # last iterations
-time_now_for_stages = []
 
 # Methods
 
@@ -114,8 +113,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-def recipe():
-    global time_now_for_stages
+def recipe(time_now_for_stages):
     for i in range(len(rel_nudge_stages)):
         if i == 0:
             pass
@@ -180,8 +178,7 @@ def fire_BEAM(number):
     subprocess.call([runme])
     os.chdir(search_space)
 
-def bookkeep(which_stage):
-    global time_now_for_stages
+def bookkeep(which_stage, time_now_for_stages):
     if which_stage == 1:
         how_many = 7
     else:
