@@ -4,7 +4,7 @@
 from relativeFactoredNudges import getNudges
 from config import *
 import pandas as pd 
-import subprocess, os, shutil, glob, time
+import subprocess, os, shutil, glob, time, fnmatch
 from modify_csv import modify_csv
 
 
@@ -120,7 +120,7 @@ def recipe():
             pass
         else:
             while True:
-                if len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1:
+                if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
                     break 
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
