@@ -14,7 +14,10 @@ open(firecue, 'w').close()
 BEAM_procs = []
 bookkeeping_procs = []
 recipe_procs = [] 
-time_now_for_stages = []
+
+#Shared time-now-list
+manager = multiprocessing.Manager()
+time_now_for_stages = manager.list()
 
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
