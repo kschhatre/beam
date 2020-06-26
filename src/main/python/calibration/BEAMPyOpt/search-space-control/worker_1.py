@@ -113,7 +113,10 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-def recipe(time_now_for_stages):
+def recipe(time_now_for_stages,all_alive_procs):
+    import os
+    name = multiprocessing.current_process().name
+    all_alive_procs.append(name+'('+str(os.getpid())+')')
     for i in range(len(rel_nudge_stages)):
         if i == 0:
             pass
@@ -168,17 +171,22 @@ def recipe(time_now_for_stages):
         print('Complete stage '+str(i+1)+' fired at time: '+str(time_now_for_stages[i])) 
   
    
-def fire_BEAM(number):  
+def fire_BEAM(number,all_alive_procs):  
+    name = multiprocessing.current_process().name
     import os
+    all_alive_procs.append(name+'('+str(os.getpid())+')') 
     print('BEAM fired on '+str(os.getpid())+' PID.')
     picked_conf_file = copy_urbansim_config % number   # label the file
     with open(beam + "/instanceconfpath.txt", "w") as text_file: 
         text_file.write(picked_conf_file)
     os.chdir(beam)
     subprocess.call([runme])
-    os.chdir(search_space)
+    os.chdir(search_space) 
 
-def bookkeep(which_stage, time_now_for_stages):
+def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
+    import
+    name = multiprocessing.current_process().name
+    all_alive_procs.append(name+'('+str(os.getpid())+')')
     if which_stage == 1:
         how_many = 7
     else:
