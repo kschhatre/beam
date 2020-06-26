@@ -184,7 +184,7 @@ def fire_BEAM(number,all_alive_procs):
     os.chdir(search_space) 
 
 def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
-    import
+    import os
     name = multiprocessing.current_process().name
     all_alive_procs.append(name+'('+str(os.getpid())+')')
     if which_stage == 1:
