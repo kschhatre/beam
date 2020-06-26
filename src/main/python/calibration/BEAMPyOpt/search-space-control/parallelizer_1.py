@@ -19,11 +19,13 @@ recipe_procs = []
 manager = multiprocessing.Manager()
 time_now_for_stages = manager.list()
 
+all_alive_procs = manager.list() 
+
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 
-o = Process(target=recipe, args=(time_now_for_stages,)) 
+o = Process(name='recipe-proc', target=recipe, args=(time_now_for_stages,all_alive_procs,)) 
 o.start()
 recipe_procs.append(o)
 
@@ -52,7 +54,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
         print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'! (neglect for stage 1.x where the .x = .(x+1))') 
-        p = Process(target=fire_BEAM, args=(which_conf,))
+        p = Process(name='fire-BEAM-'+str(k+1)+'.'+str(m+1), target=fire_BEAM, args=(which_conf,all_alive_procs,))
         p.start()
         BEAM_procs.append(p)
     print('All BEAM runs for stage '+str(k+1)+' has been fired!')
@@ -60,9 +62,16 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         text_file.write('fire '+str(k+1)+' done')    
 
     print('Bookkeeping method initialized at stage '+str(k+1)+'!')
-    q = Process(target=bookkeep, args=(int(k+1),time_now_for_stages,))  
+    q = Process(name='bookkeep-'+str(k+1), target=bookkeep, args=(int(k+1),time_now_for_stages,all_alive_procs,))  
     q.start()
     bookkeeping_procs.append(q) 
+
+    for d in all_alive_procs:
+        if not psutil.pid_exists(int(all_alive_procs[i].split('(', 1)[1].split(')')[0])): 
+            all_alive_procs.remove(all_alive_procs[i])
+        else:
+            pass
+    print(str(len(all_alive_procs))+' current alive procs, the list: ',all_alive_procs) 
 
 '''
 for filename in glob.glob(beam+'/test/input/sf-light/urbansim-10k_*'):  
