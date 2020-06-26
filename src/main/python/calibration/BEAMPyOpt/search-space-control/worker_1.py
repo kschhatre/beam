@@ -91,24 +91,31 @@ def vector(whichCounter):
         required = 7
     else:
         required = 4
-    if len(input_vector) == required:
-        return input_vector
-    else:
-        return vector(whichCounter)  
+    while True:      
+        if len(input_vector) == required:
+            print('Input vector length matched with parallel_passes!')
+            break
+        else:
+            time.sleep(5)
+            print('Length of generated input vector is != parallel_passes.')    
+    return input_vector  
 
 
 
 def find_op_folder(time_now, parallel_passes):  # increment op folder count
-    output_folders = []
-    for i in range(len(glob.glob(sf_light_dir))):
-        if time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) < time_now:
-            pass 
-        elif time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) > time_now: 
-            output_folders.append(glob.glob(sf_light_dir)[i]) if glob.glob(sf_light_dir)[i] not in output_folders else output_folders
-    if any( [not output_folders, len(output_folders) < parallel_passes] ):
-        return find_op_folder(time_now, parallel_passes)
-    else:
-        return output_folders 
+    while True:      
+        output_folders = []
+        for i in range(len(glob.glob(sf_light_dir))):
+            if time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) < time_now:
+                pass 
+            elif time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) > time_now: 
+                output_folders.append(glob.glob(sf_light_dir)[i]) if glob.glob(sf_light_dir)[i] not in output_folders else output_folders
+        if not any( [not output_folders, len(output_folders) < parallel_passes] ):
+            break
+        else:
+            time.sleep(5)
+            print('Required o/p folder of current stage are not ready, waiting...')
+    return output_folders 
 
 
 # Recipe
@@ -222,7 +229,7 @@ def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
             csv_name = output_csv % (j+2, total_L1) 
             modify_csv(csv_name=csv_name)
         else:
-            offset_labeling_list = list(range(7,50,3)) 
+            offset_labeling_list = list(range(7,total_rel_nudge_trials+1,3)) 
             iter_label = offset_labeling_list[which_stage-2] + int(which_stage) + j 
             df.to_csv(output_csv % (iter_label, total_L1), sep='\t', encoding='utf-8')   
             csv_name = output_csv % (iter_label, total_L1) 
