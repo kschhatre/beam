@@ -66,9 +66,9 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
     q.start()
     bookkeeping_procs.append(q) 
 
-    for d in all_alive_procs:
-        if not psutil.pid_exists(int(all_alive_procs[i].split('(', 1)[1].split(')')[0])): 
-            all_alive_procs.remove(all_alive_procs[i])
+    for d in range(len(all_alive_procs)): 
+        if not psutil.pid_exists(int(all_alive_procs[d].split('(', 1)[1].split(')')[0])): 
+            all_alive_procs.remove(all_alive_procs[d])
         else:
             pass
     print(str(len(all_alive_procs))+' current alive procs, the list: ',all_alive_procs) 
