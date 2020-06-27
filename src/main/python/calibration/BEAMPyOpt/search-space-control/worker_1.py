@@ -4,9 +4,11 @@
 from relativeFactoredNudges import getNudges
 from config import *
 import pandas as pd 
-import subprocess, os, shutil, glob, time, fnmatch, multiprocessing
+import subprocess, os, shutil, glob, time, fnmatch, multiprocessing, warnings
 from modify_csv import modify_csv
+from pandas.core.common import SettingWithCopyWarning
 
+warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 # NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
@@ -110,7 +112,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
                 pass 
             elif time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) > time_now: 
                 output_folders.append(glob.glob(sf_light_dir)[i]) if glob.glob(sf_light_dir)[i] not in output_folders else output_folders
-        if not any( [not output_folders, len(output_folders) < parallel_passes] ):
+        if not any( [not output_folders, len(output_folders) < parallel_passes, len(output_folders) > parallel_passes] ):
             break
         else:
             time.sleep(5)
@@ -120,7 +122,7 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-def recipe(time_now_for_stages,all_alive_procs):
+def recipe(time_now_for_stages,all_alive_procs,all_input_vecs):
     import os
     name = multiprocessing.current_process().name
     all_alive_procs.append(name+'('+str(os.getpid())+')')
@@ -134,7 +136,8 @@ def recipe(time_now_for_stages,all_alive_procs):
                 if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
                     break    
         print('Recipe method initialized at stage '+str(i+1)+'!') 
-        input_vector_now = vector(whichCounter=rel_nudge_stages[i])  
+        input_vector_now = vector(whichCounter=rel_nudge_stages[i]) 
+        all_input_vecs.append(input_vector_now) 
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
             parallel_passes = 7
         else: # len(input_vector_now) == 4
@@ -190,7 +193,7 @@ def fire_BEAM(number,all_alive_procs):
     subprocess.call([runme])
     os.chdir(search_space) 
 
-def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
+def bookkeep(which_stage, time_now_for_stages,all_alive_procs,all_input_vecs):
     import os
     name = multiprocessing.current_process().name
     all_alive_procs.append(name+'('+str(os.getpid())+')')
@@ -211,14 +214,16 @@ def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
         while not os.path.exists(out_file):
             time.sleep(5) 
             print('In bookkeep method: waiting for BEAM output...')
-        print('Required csv file for bookkeep() found at '+str(which_stage)+'.'+str(j)) 
+        print('Required csv file for bookkeep() found at stage '+str(which_stage)+'.'+str(j)) 
         if os.path.isfile(out_file):
             df =  pd.read_csv(out_file)
         else:  
             raise ValueError("%s isn't a file!" % file_path)
         df['iterations'][1] = 'modeshare_now'
         del df['cav']
-        df.loc[-1] = ['intercepts_now'] + input_vector_base[i] 
+        # all_input_vecs is a huge list whose each element contain all vectors for one stage, its length being 7,4,4,4, and so on...
+        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', all_input_vecs[which_stage-1][j]) 
+        df.loc[-1] = ['intercepts_now'] + all_input_vecs[which_stage-1][j] 
         df.index = df.index+1 
         df.sort_index(inplace=True) 
         df.set_index('iterations', inplace=True)
