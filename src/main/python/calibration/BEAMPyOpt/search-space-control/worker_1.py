@@ -205,16 +205,19 @@ def bookkeep(which_stage, time_now_for_stages,all_alive_procs):
         if len(time_now_for_stages) > which_stage-1: 
             break
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
+    print('Output folder for stage '+str(which_stage)+' are', output_folders)
     for j in range(len(output_folders)):
         out_file = output_folders[j] + '/referenceRealizedModeChoice.csv'
         while not os.path.exists(out_file):
             time.sleep(5) 
             print('In bookkeep method: waiting for BEAM output...')
+        print('Required csv file for bookkeep() found at '+str(which_stage)+'.'+str(j)) 
         if os.path.isfile(out_file):
             df =  pd.read_csv(out_file)
         else:  
             raise ValueError("%s isn't a file!" % file_path)
         df['iterations'][1] = 'modeshare_now'
+        del df['cav']
         df.loc[-1] = ['intercepts_now'] + input_vector_base[i] 
         df.index = df.index+1 
         df.sort_index(inplace=True) 
