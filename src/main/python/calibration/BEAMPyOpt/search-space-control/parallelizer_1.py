@@ -51,7 +51,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
             which_conf = int(m + 2)   
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
-        print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'! (neglect for stage 1.x since .x is .(x+1))') 
+        print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)) 
         p = Process(name='fire-BEAM-'+str(k+1)+'.'+str(m+1), target=fire_BEAM, args=(which_conf,))
         p.start()
         BEAM_procs.append(p)
