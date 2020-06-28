@@ -174,8 +174,7 @@ def recipe():
             print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
-        print('Contents of time-list are ',time_now_for_stages)
-        print('Complete stage '+str(i+1)+' fired at time: '+str(time_now_for_stages[i])) 
+        print('Complete stage '+str(i+1)+' is fired!') 
   
    
 def fire_BEAM(number):  
