@@ -24,8 +24,14 @@ print('Ready for a fresh SSC run!')
 
 # point 4
 files = glob.glob(sf_light_dir)
-for f in files:
-    os.remove(f)
+if not files:
+    pass
+else:
+    for i in range(len(files)):
+        if os.path.isfile(files[i]) or os.path.islink(files[i]):
+            os.remove(files[i])
+        elif os.path.isdir(files[i]):
+            shutil.rmtree(files[i]) 
 
 # point 5
 os.environ["MAXRAM"] = "16g"
