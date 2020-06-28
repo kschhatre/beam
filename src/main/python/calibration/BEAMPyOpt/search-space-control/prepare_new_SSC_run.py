@@ -1,5 +1,5 @@
 from config import *
-import os, subprocess, glob
+import os, subprocess, glob, shutil
 
 '''
 1. Deletes all *.log file in BEAM dir
