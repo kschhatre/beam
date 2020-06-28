@@ -48,7 +48,7 @@ else:
 
 df.loc[1,'iterations'] = 'modeshare_now'
 del df['cav']
-df.loc[-1] = ['intercepts_now', 0,0,0,0,0,0,0,0,0]
+df.loc[-1] = ['intercepts_now', 0,0,0,0,0,0,0,0]
 df.index = df.index+1 
 df.sort_index(inplace=True)
 df.set_index('iterations', inplace=True)
