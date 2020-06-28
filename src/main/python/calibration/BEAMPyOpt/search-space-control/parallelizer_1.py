@@ -35,7 +35,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
                 break
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
-        time.sleep(10)
+        time.sleep(5)
         print('Waiting for the write cue...')
         if file_text[0] == 'write stage '+str(k+1)+' done': 
             break 
