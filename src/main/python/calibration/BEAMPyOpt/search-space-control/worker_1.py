@@ -170,7 +170,7 @@ def recipe():
                     break 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
-            time.sleep(10)
+            time.sleep(5)
             print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
@@ -217,8 +217,8 @@ def bookkeep(which_stage, time_now_for_stages):
         del df['cav']
         # input_vector_now is a huge list whose each element contain all vectors for one stage, its length being 7,4,4,4, and so on...
         stage_input_vector = vector(whichCounter=rel_nudge_stages[int(which_stage)-1]) 
-        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', stage_input_vector[which_stage-1][j]) 
-        df.loc[-1] = ['intercepts_now'] + stage_input_vector[which_stage-1][j] 
+        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', stage_input_vector[j]) 
+        df.loc[-1] = ['intercepts_now'] + stage_input_vector[j] 
         df.index = df.index+1 
         df.sort_index(inplace=True) 
         df.set_index('iterations', inplace=True)
