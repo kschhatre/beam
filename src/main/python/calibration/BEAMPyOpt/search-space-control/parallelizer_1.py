@@ -19,15 +19,11 @@ recipe_procs = []
 manager = multiprocessing.Manager()
 time_now_for_stages = manager.list()
 
-all_alive_procs = manager.list() 
-
-all_input_vecs = manager.list()
-
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 
-o = Process(name='recipe-proc', target=recipe, args=(time_now_for_stages,all_alive_procs,all_input_vecs,)) 
+o = Process(name='recipe-proc', target=recipe) 
 o.start()
 recipe_procs.append(o)
 
@@ -39,7 +35,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
                 break
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
-        time.sleep(5)
+        time.sleep(10)
         print('Waiting for the write cue...')
         if file_text[0] == 'write stage '+str(k+1)+' done': 
             break 
@@ -56,25 +52,19 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
         else:
             which_conf = int(rel_nudge_stages[k] - m) 
         print('fire_BEAM method initialized at stage '+str(k+1)+'.'+str(m+1)+'! (neglect for stage 1.x since .x is .(x+1))') 
-        p = Process(name='fire-BEAM-'+str(k+1)+'.'+str(m+1), target=fire_BEAM, args=(which_conf,all_alive_procs,))
+        p = Process(name='fire-BEAM-'+str(k+1)+'.'+str(m+1), target=fire_BEAM, args=(which_conf,))
         p.start()
         BEAM_procs.append(p)
         time.sleep(1)
     print('All BEAM runs for stage '+str(k+1)+' has been fired!')
     with open(beam+"/firecue.txt", "w") as text_file: 
-        text_file.write('fire '+str(k+1)+' done')    
+        text_file.write('fire '+str(k+1)+' done') 
+    time_now_for_stages.append(time.ctime())   
 
     print('Bookkeeping method initialized at stage '+str(k+1)+'!')
-    q = Process(name='bookkeep-'+str(k+1), target=bookkeep, args=(int(k+1),time_now_for_stages,all_alive_procs,all_input_vecs,))  
+    q = Process(name='bookkeep-'+str(k+1), target=bookkeep, args=(int(k+1),time_now_for_stages,))  
     q.start()
     bookkeeping_procs.append(q) 
-
-    for d in range(len(all_alive_procs)): 
-        if not psutil.pid_exists(int(all_alive_procs[d].split('(', 1)[1].split(')')[0])): 
-            all_alive_procs.remove(all_alive_procs[d])
-        else:
-            pass
-    print(str(len(all_alive_procs))+' current alive procs, the list: ',all_alive_procs) 
 
 '''
 for filename in glob.glob(beam+'/test/input/sf-light/urbansim-10k_*'):  
