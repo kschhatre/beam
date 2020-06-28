@@ -39,7 +39,6 @@ def getNudges(whichCounter):
                     vector_4_gradients.append(random.sample(range(1, 18),1))
                 else:
                     vector_4_gradients.append(random.sample(range(-18, -1),1))
-            del vector_4_gradients[2]
             vector_4_gradients = list(itertools.chain(*vector_4_gradients))
             input_vector.append(vector_4_gradients)  # 7 vector for first 8 runs based on the directionality
 
