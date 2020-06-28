@@ -2,7 +2,7 @@
 # Implementation 2 related
 import numpy as np 
 import pandas as pd 
-import itertools, glob, fnmatch, os, random, csv
+import itertools, glob, fnmatch, os, random, csv, math
 import warnings
 from config import *
 
@@ -87,8 +87,15 @@ def getNudges(whichCounter):
             # !!! REMINDER: we are only optimizing the worst performing first four mode choices !!!
             # However the top 4 worst performing mode choices are recalculated at each stage, so once the higher worse performing choices are optimized, the model will automatically shift the optimization towards the lesser worse performing mode choices
             compute_df.loc['m_(t+1)'] = [compute_df.loc[2][x]-compute_df.loc['factor'][x]*compute_df.loc['d_L1/d_m'][x] if compute_df.loc['nudge_direction'][x].astype(int) == 1 else compute_df.loc[2][x]+compute_df.loc['factor'][x]*compute_df.loc['d_L1/d_m'][x] for x in range(len(compute_df.loc[3]))]
+            # Final test to check inf or -inf returned values due to unforeseen computations
+            inf_test = [ 1 if abs(compute_df.loc['m_(t+1)'][x]) == math.inf  else 0 for x in range(len(compute_df.loc['m_(t+1)']))]
+            # rolling back such intercept values to the values found in df_next as a temporary solution!!
+            for i in range(len(inf_test)):
+                if inf_test[i] == 1:
+                    compute_df.loc['m_(t+1)'][i] = compute_df.loc[2][i]
+                else:
+                    pass
             input_vector.append(compute_df.loc['m_(t+1)'].tolist()) 
-            print('Nudges computation for '+str(i+1)+' substage is complete!')
 
         # at the end of this loop, it will return 4 input vectors
 
