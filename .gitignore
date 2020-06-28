@@ -62,3 +62,4 @@ test/input/sf-light/urbansim-10k_*
 instanceconfpath.txt
 *.txt
 v8.6.0.0/
+ssc_*.log
