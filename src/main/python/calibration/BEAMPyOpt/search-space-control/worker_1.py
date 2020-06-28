@@ -4,7 +4,7 @@
 from relativeFactoredNudges import getNudges
 from config import *
 import pandas as pd 
-import subprocess, os, shutil, glob, time, fnmatch, multiprocessing, warnings
+import subprocess, os, shutil, glob, time, fnmatch, multiprocessing, warnings, math
 from modify_csv import modify_csv
 from pandas.core.common import SettingWithCopyWarning
 
@@ -122,10 +122,9 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
 
 # Recipe
 
-def recipe(time_now_for_stages,all_alive_procs,all_input_vecs):
+def recipe():
     import os
     name = multiprocessing.current_process().name
-    all_alive_procs.append(name+'('+str(os.getpid())+')')
     for i in range(len(rel_nudge_stages)):
         if i == 0:
             pass
@@ -137,7 +136,6 @@ def recipe(time_now_for_stages,all_alive_procs,all_input_vecs):
                     break    
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i]) 
-        all_input_vecs.append(input_vector_now) 
         if len(input_vector_now) == 7: # [[...],[...],[...],[...],[...],[...],[...]]
             parallel_passes = 7
         else: # len(input_vector_now) == 4
@@ -172,19 +170,17 @@ def recipe(time_now_for_stages,all_alive_procs,all_input_vecs):
                     break 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
-            time.sleep(5)
+            time.sleep(10)
             print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
-        time_now_for_stages.append(time.ctime())
         print('Contents of time-list are ',time_now_for_stages)
         print('Complete stage '+str(i+1)+' fired at time: '+str(time_now_for_stages[i])) 
   
    
-def fire_BEAM(number,all_alive_procs):  
+def fire_BEAM(number):  
     name = multiprocessing.current_process().name
     import os
-    all_alive_procs.append(name+'('+str(os.getpid())+')') 
     print('BEAM fired on '+str(os.getpid())+' PID.')
     picked_conf_file = copy_urbansim_config % number   # label the file
     with open(beam + "/instanceconfpath.txt", "w") as text_file: 
@@ -193,20 +189,19 @@ def fire_BEAM(number,all_alive_procs):
     subprocess.call([runme])
     os.chdir(search_space) 
 
-def bookkeep(which_stage, time_now_for_stages,all_alive_procs,all_input_vecs):
+def bookkeep(which_stage, time_now_for_stages):
     import os
     name = multiprocessing.current_process().name
-    all_alive_procs.append(name+'('+str(os.getpid())+')')
     if which_stage == 1:
         how_many = 7
     else:
         how_many = 4 
     while True:
-        time.sleep(5)
+        time.sleep(10)
         print('Inside bookkeep(): checking if required optimization stage has been fired...')
-        print('Time-list has now contents:', time_now_for_stages)
-        if len(time_now_for_stages) > which_stage-1: 
+        if len(time_now_for_stages) > int(which_stage)-1: 
             break
+    print('Time-list has now contents:', time_now_for_stages)
     output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
     print('Output folder for stage '+str(which_stage)+' are', output_folders)
     for j in range(len(output_folders)):
@@ -221,9 +216,10 @@ def bookkeep(which_stage, time_now_for_stages,all_alive_procs,all_input_vecs):
             raise ValueError("%s isn't a file!" % file_path)
         df['iterations'][1] = 'modeshare_now'
         del df['cav']
-        # all_input_vecs is a huge list whose each element contain all vectors for one stage, its length being 7,4,4,4, and so on...
-        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', all_input_vecs[which_stage-1][j]) 
-        df.loc[-1] = ['intercepts_now'] + all_input_vecs[which_stage-1][j] 
+        # input_vector_now is a huge list whose each element contain all vectors for one stage, its length being 7,4,4,4, and so on...
+        stage_input_vector = vector(whichCounter=rel_nudge_stages[int(which_stage)-1]) 
+        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', stage_input_vector[which_stage-1][j]) 
+        df.loc[-1] = ['intercepts_now'] + stage_input_vector[which_stage-1][j] 
         df.index = df.index+1 
         df.sort_index(inplace=True) 
         df.set_index('iterations', inplace=True)
