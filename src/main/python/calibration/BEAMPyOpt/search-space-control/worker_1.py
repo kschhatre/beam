@@ -56,7 +56,7 @@ def change_conf(input_vector, filename):
     0   1            2             3                 4         5                6    7
     Line number in Conf file:
     25  26           27            28                29        30               31   32
-    file_text index will be: line number in conf - 1
+    ATTENTION!! file_text index will be: line number in conf - 1
     required input_vector indices:
     1   7            2             5                 3         4                6    0
     '''
@@ -119,6 +119,16 @@ def find_op_folder(time_now, parallel_passes):  # increment op folder count
             print('Required o/p folder of current stage are not ready, waiting...')
     return output_folders 
 
+def get_me_ip_vecs(op_folder):
+    ip_vec_file=op_folder+'/beam.conf'
+    tmp_vecs = []
+    with open(ip_vec_file, 'r') as fin:
+        file_text=fin.readlines()
+    for i in range(24,24+8):
+        tmp_vecs.append(int(file_text[i].split('=',1)[1]))
+    original_order = [1, 7, 2, 5, 3, 4, 6, 0]
+    ip_vecs = [item[0] for item in sorted(zip(tmp_vecs, original_order), key=lambda x: x[1])]
+    return ip_vecs
 
 # Recipe
 
@@ -215,10 +225,9 @@ def bookkeep(which_stage, time_now_for_stages):
             raise ValueError("%s isn't a file!" % file_path)
         df['iterations'][1] = 'modeshare_now'
         del df['cav']
-        # input_vector_now is a huge list whose each element contain all vectors for one stage, its length being 7,4,4,4, and so on...
-        stage_input_vector = vector(whichCounter=rel_nudge_stages[int(which_stage)-1]) 
-        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', stage_input_vector[j]) 
-        df.loc[-1] = ['intercepts_now'] + stage_input_vector[j] 
+        ip_vecs = get_me_ip_vecs(output_folders[j])
+        print('Input vector for this run ('+str(which_stage)+'.'+str(j)+') was: ', ip_vecs) 
+        df.loc[-1] = ['intercepts_now'] + ip_vecs 
         df.index = df.index+1 
         df.sort_index(inplace=True) 
         df.set_index('iterations', inplace=True)
