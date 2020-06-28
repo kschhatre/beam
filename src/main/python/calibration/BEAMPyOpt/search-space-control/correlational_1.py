@@ -32,6 +32,7 @@ else:
     raise ValueError("%s isn't a file!" % file_path)
 
 df.loc[1,'iterations'] = 'modeshare_now'
+del df['cav']
 df.loc[-1] = ['intercepts_now', 0,0,0,0,0,0,0,0,0]
 df.index = df.index+1 
 df.sort_index(inplace=True)
