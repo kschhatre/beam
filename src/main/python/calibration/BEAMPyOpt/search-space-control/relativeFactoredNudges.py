@@ -51,6 +51,7 @@ def getNudges(whichCounter):
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
         
         for i in range(4):
+            print('Computing nudges for '+str(i+1)+' substage...')
             df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
             df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0]) 
             #INFO: df_next.loc[4] is  row and df_next.iloc[:,4] is column 
@@ -88,6 +89,7 @@ def getNudges(whichCounter):
             # However the top 4 worst performing mode choices are recalculated at each stage, so once the higher worse performing choices are optimized, the model will automatically shift the optimization towards the lesser worse performing mode choices
             compute_df.loc['m_(t+1)'] = [compute_df.loc[2][x]-compute_df.loc['factor'][x]*compute_df.loc['d_L1/d_m'][x] if compute_df.loc['nudge_direction'][x].astype(int) == 1 else compute_df.loc[2][x]+compute_df.loc['factor'][x]*compute_df.loc['d_L1/d_m'][x] for x in range(len(compute_df.loc[3]))]
             input_vector.append(compute_df.loc['m_(t+1)'].tolist()) 
+            print('Nudges computation for '+str(i+1)+' substage is complete!')
 
         # at the end of this loop, it will return 4 input vectors
 
