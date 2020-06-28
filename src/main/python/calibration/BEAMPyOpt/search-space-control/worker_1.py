@@ -242,3 +242,4 @@ def bookkeep(which_stage, time_now_for_stages,all_alive_procs,all_input_vecs):
             df.to_csv(output_csv % (iter_label, total_L1), sep='\t', encoding='utf-8')   
             csv_name = output_csv % (iter_label, total_L1) 
             modify_csv(csv_name=csv_name) 
+    print('bookkeep() for stage '+str(which_stage)+' completed!')
