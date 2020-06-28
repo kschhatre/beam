@@ -6,6 +6,7 @@ import os, subprocess, glob
 2. Deletes all urbansim-10k_*.conf or txt files from sf-light folder
 3. Deletes all files except 1_*.csv from the storage 
 4. Delete BEAM urbansim output directory to clear up space on EC2 before the run
+5. export MAXRAM=16g
 '''
 
 for item in os.listdir(beam):
@@ -25,3 +26,6 @@ print('Ready for a fresh SSC run!')
 files = glob.glob(sf_light_dir)
 for f in files:
     os.remove(f)
+
+# point 5
+os.environ["MAXRAM"] = "16g"
