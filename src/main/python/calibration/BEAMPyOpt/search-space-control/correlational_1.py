@@ -4,6 +4,7 @@ import os, subprocess, time, glob, csv
 import pandas as pd
 from modify_csv import modify_csv
 from config import *
+from worker_1 import ext_change, change_conf
 
 # KEEP ALL INTERCEPTS AS ZERO and KEEP OUTPUT FOLDER EMPTY!!
 
@@ -11,6 +12,20 @@ from config import *
 filelist = [ f for f in os.listdir(shared) ]
 for f in filelist:
     os.remove(os.path.join(shared, f))
+
+################################### Preprocessing
+
+num = 1
+shutil.copy(base_urbansim_config, copy_urbansim_config % (num))
+picked_conf_file = copy_urbansim_config % (num)   # label the file
+filename = copy_urbansim_txt % (num)
+input_vector = [0,0,0,0,0,0,0,0]
+finaliteration = '0'
+ext_change('edit', picked_conf_file, filename)
+change_conf(input_vector=input_vector, filename=filename)
+ext_change('save', picked_conf_file, filename) 
+with open(beam + "/instanceconfpath.txt", "w") as text_file: 
+    text_file.write(picked_conf_file) 
 
 ################################### Fire BEAM
 os.chdir(beam) 
