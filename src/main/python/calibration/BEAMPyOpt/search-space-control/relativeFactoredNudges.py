@@ -3,6 +3,7 @@
 import numpy as np 
 import pandas as pd 
 import itertools, glob, fnmatch, os, random, csv, math
+from natsort import natsorted
 import warnings
 from config import *
 
@@ -47,13 +48,50 @@ def getNudges(whichCounter):
         # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
         # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
-        iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
+        #iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
         
+        # !! NEW METHOD: Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
+        
+        prev_list, next_list, names = ([] for i in range(3)) 
+        while True:
+            files = glob.glob(shared)
+            if len(files) == whichCounter - 4:
+                break
+            else:
+                time.sleep(10)
+                print('Something is wrong or memory bank not ready from first stage, stuck inside getNudges()...')
+        for i in range(len(files)):
+            names.append(files[i][77:-4])  # extract file names only
+        names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+
+        if whichCounter == 12: # select best 5 CSVs
+            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+            next_list = [names_sorted[0]] * 4
+            prev_list = [names_sorted[1:5]]  
+        else: # find best CSV from either stage and create 4 pair accordingly
+            if whichCounter == 16:
+                list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
+            else:
+                list_one = names_sorted[whichCounter-12:whichCounter-8]
+            list_two = names_sorted[whichCounter-8:whichCounter-4]
+            list_one_min = min(list_one, key=lambda x: int(x.split('_')[1]))
+            list_two_min = min(list_two, key=lambda x: int(x.split('_')[1])) 
+            if int(list_one_min.split('_')[1]) < int(list_two_min.split('_')[1]):
+                next_list = [list_one_min] * 4
+                prev_list = list_two
+            else:
+                next_list = [list_two_min] * 4
+                list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                prev_list = list_one[0:4]
+
+        # NEW METHOD ENDS 
+
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
-            df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
-            df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0]) 
-            #INFO: df_next.loc[4] is  row and df_next.iloc[:,4] is column 
+            #df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
+            #df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0]) 
+            df_prev =  pd.read_csv(shared+'/'+prev_list[i]+'.csv')  
+            df_next =  pd.read_csv(shared+'/'+next_list[i]+'.csv')  
             # Create a separate df from df_next with 2 cols: L1 and L1_rank
             Rank_L1_df = df_next.loc[3:4].T 
             # Compute relative ratios of top 4 worst performing mode choices wrt to observed L1 norms
