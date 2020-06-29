@@ -220,6 +220,7 @@ def bookkeep(which_stage, time_now_for_stages):
             print('In bookkeep method: waiting for BEAM output...')
         print('Required csv file for bookkeep() found at stage '+str(which_stage)+'.'+str(j)) 
         if os.path.isfile(out_file):
+            time.sleep(1)
             df =  pd.read_csv(out_file)
         else:  
             raise ValueError("%s isn't a file!" % file_path)
