@@ -17,7 +17,6 @@ recipe_procs = []
 
 #Shared time-now-list
 manager = multiprocessing.Manager()
-time_now_for_stages = manager.list()
 
 # information inline to the info fed in the worker
 total_rel_nudge_trials = 36
@@ -35,7 +34,7 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
                 break
         with open(beam+"/writecue.txt", 'r') as fin: 
             file_text=fin.readlines()
-        time.sleep(5)
+        time.sleep(10)
         print('Waiting for the write cue...')
         if file_text[0] == 'write stage '+str(k+1)+' done': 
             break 
@@ -59,10 +58,9 @@ for k in range(len(rel_nudge_stages)): # per stage start x=(number of parallel p
     print('All BEAM runs for stage '+str(k+1)+' has been fired!')
     with open(beam+"/firecue.txt", "w") as text_file: 
         text_file.write('fire '+str(k+1)+' done') 
-    time_now_for_stages.append(time.ctime())   
 
     print('Bookkeeping method initialized at stage '+str(k+1)+'!')
-    q = Process(name='bookkeep-'+str(k+1), target=bookkeep, args=(int(k+1),time_now_for_stages,))  
+    q = Process(name='bookkeep-'+str(k+1), target=bookkeep, args=(int(k+1),))  
     q.start()
     bookkeeping_procs.append(q) 
 
