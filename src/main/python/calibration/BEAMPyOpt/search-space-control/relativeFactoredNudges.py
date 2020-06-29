@@ -12,7 +12,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def getNudges(whichCounter):
 
     input_vector = []
-    total_rel_nudge_trials = 36
     rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # [8, 12, 16, 20, 24, 28, 32, 36]
 
     if whichCounter == 8:

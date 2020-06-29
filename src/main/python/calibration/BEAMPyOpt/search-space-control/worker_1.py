@@ -13,7 +13,6 @@ warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 # NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
 # iterator
-total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # 8, 12, 16, 20, 24, 28, 32, 36
 
 # constants
