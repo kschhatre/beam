@@ -19,7 +19,6 @@ recipe_procs = []
 manager = multiprocessing.Manager()
 
 # information inline to the info fed in the worker
-total_rel_nudge_trials = 36
 rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4))
 
 o = Process(name='recipe-proc', target=recipe) 
