@@ -52,7 +52,7 @@ def getNudges(whichCounter):
         # !! NEW METHOD: Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
         
         prev_list, next_list, names = ([] for i in range(3)) 
-        files = glob.glob(shared)
+        files = glob.glob(shared+'/*')
         for i in range(len(files)):
             names.append(files[i][77:-4])  # extract file names only
         names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
