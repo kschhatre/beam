@@ -60,7 +60,7 @@ def getNudges(whichCounter):
         if whichCounter == 12: # select best 5 CSVs
             names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
             next_list = [names_sorted[0]] * 4
-            prev_list = [names_sorted[1:5]]  
+            prev_list = names_sorted[1:5]
         else: # find best CSV from either stage and create 4 pair accordingly
             if whichCounter == 16:
                 list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
