@@ -4,7 +4,7 @@
 from relativeFactoredNudges import getNudges
 from config import *
 import pandas as pd 
-import subprocess, os, shutil, glob, time, fnmatch, multiprocessing, warnings, math
+import subprocess, os, shutil, glob, time, fnmatch, multiprocessing, warnings, math, pickle
 from modify_csv import modify_csv
 from pandas.core.common import SettingWithCopyWarning
 
@@ -104,19 +104,22 @@ def vector(whichCounter):
 
 
 
-def find_op_folder(time_now, parallel_passes):  # increment op folder count
-    while True:      
-        output_folders = []
-        for i in range(len(glob.glob(sf_light_dir))):
-            if time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) < time_now:
-                pass 
-            elif time.ctime(os.path.getctime(glob.glob(sf_light_dir)[i])) > time_now: 
-                output_folders.append(glob.glob(sf_light_dir)[i]) if glob.glob(sf_light_dir)[i] not in output_folders else output_folders
-        if not any( [not output_folders, len(output_folders) < parallel_passes, len(output_folders) > parallel_passes] ):
+def find_op_folder(parallel_passes, neglect=[]):  
+    # ATTENTION!!! Assuming that op folder is empty before the SSC run (but also after correlational, ie op folder empty after correlational)!
+    while True:
+        if any([not glob.glob(sf_light_dir), len(glob.glob(sf_light_dir)) < len(neglect)]): 
+            time.sleep(10)
+            print('All output folders have not been generated yet, waiting...')
+        else:
+            break
+    while True:
+        output_folders_tmp = glob.glob(sf_light_dir)
+        output_folders = [item for item in output_folders_tmp if item not in neglect]
+        if len(output_folders) == parallel_passes:
             break
         else:
-            time.sleep(5)
-            print('Required o/p folder of current stage are not ready, waiting...')
+            time.sleep(10)
+            print('Stage level output folders are being generated, waiting...')
     return output_folders 
 
 def get_me_ip_vecs(op_folder):
@@ -125,7 +128,7 @@ def get_me_ip_vecs(op_folder):
     with open(ip_vec_file, 'r') as fin:
         file_text=fin.readlines()
     for i in range(24,24+8):
-        tmp_vecs.append(int(file_text[i].split('=',1)[1]))
+        tmp_vecs.append(float(file_text[i].split('=',1)[1]))
     original_order = [1, 7, 2, 5, 3, 4, 6, 0]
     ip_vecs = [item[0] for item in sorted(zip(tmp_vecs, original_order), key=lambda x: x[1])]
     return ip_vecs
@@ -140,7 +143,7 @@ def recipe():
             pass
         else:
             while True:
-                time.sleep(5)
+                time.sleep(10)
                 print('Recipe method waiting to validate required number of csv files before calling the relativeFactoredNudges() at stage '+str(i+1)+' ...')
                 if any([len(fnmatch.filter(os.listdir(shared), '*.csv')) > rel_nudge_stages[i-1]-1, len(fnmatch.filter(os.listdir(shared), '*.csv')) == rel_nudge_stages[i-1]]):
                     break    
@@ -180,7 +183,7 @@ def recipe():
                     break 
             with open(beam+"/firecue.txt", 'r') as fin:  
                 file_text=fin.readlines()
-            time.sleep(5)
+            time.sleep(10)
             print('Waiting for the fire cue...') 
             if file_text[0] == 'fire '+str(i+1)+' done':
                 break
@@ -198,29 +201,31 @@ def fire_BEAM(number):
     subprocess.call([runme])
     os.chdir(search_space) 
 
-def bookkeep(which_stage, time_now_for_stages):
+def bookkeep(which_stage):
     import os
     name = multiprocessing.current_process().name
     if which_stage == 1:
         how_many = 7
+        output_folders = find_op_folder(parallel_passes=how_many,neglect=[])
+        with open("op_folders.txt", "wb") as fp:
+            pickle.dump(output_folders, fp) 
     else:
-        how_many = 4 
-    while True:
-        time.sleep(10)
-        print('Inside bookkeep(): checking if required optimization stage has been fired...')
-        if len(time_now_for_stages) > int(which_stage)-1: 
-            break
-    print('Time-list has now contents:', time_now_for_stages)
-    output_folders = find_op_folder(time_now=time_now_for_stages[which_stage-1], parallel_passes=how_many)
+        how_many = 4
+        with open("op_folders.txt", "rb") as fp:
+            neglect = pickle.load(fp) 
+        output_folders = find_op_folder(parallel_passes=how_many,neglect=neglect)
+        new_content = output_folders + neglect
+        with open("op_folders.txt", "wb") as fp:
+            pickle.dump(new_content, fp)  
     print('Output folder for stage '+str(which_stage)+' are', output_folders)
     for j in range(len(output_folders)):
         out_file = output_folders[j] + '/referenceRealizedModeChoice.csv'
         while not os.path.exists(out_file):
-            time.sleep(5) 
+            time.sleep(10) 
             print('In bookkeep method: waiting for BEAM output...')
         print('Required csv file for bookkeep() found at stage '+str(which_stage)+'.'+str(j)) 
         if os.path.isfile(out_file):
-            time.sleep(1)
+            time.sleep(2)
             df =  pd.read_csv(out_file)
         else:  
             raise ValueError("%s isn't a file!" % file_path)
