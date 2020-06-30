@@ -43,6 +43,8 @@ def getNudges(whichCounter):
             input_vector.append(vector_4_gradients)  # 7 vector for first 8 runs based on the directionality
 
     else:
+        '''
+        # METHOD -1 (oldest)
         # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
         # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
         # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
@@ -62,7 +64,9 @@ def getNudges(whichCounter):
             next_list = [names_sorted[0]] * 4
             prev_list = names_sorted[1:5]
         
-        else: # NEW METHOD 1
+        # NEW METHOD 1
+
+        else: 
             if whichCounter == 16:
                 list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
             else:
@@ -85,7 +89,8 @@ def getNudges(whichCounter):
 
         # NEW METHOD 1 ENDS
 
-        '''
+        # PART OF METHOD 0...
+
         else: # find best CSV from either stage and create 4 pair accordingly
             if whichCounter == 16:
                 list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
@@ -101,8 +106,18 @@ def getNudges(whichCounter):
                 next_list = [list_two_min] * 4
                 list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 prev_list = list_one[0:4]
-        '''
+
         # NEW METHOD 0 ENDS 
+        '''
+
+        prev_list, next_list, names = ([] for i in range(3)) 
+        files = glob.glob(shared+'/*')
+        for i in range(len(files)):
+            names.append(files[i][77:-4])  # extract file names only
+        names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+        names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+        next_list = [names_sorted[0]] * 4
+        prev_list = names_sorted[1:5]
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
