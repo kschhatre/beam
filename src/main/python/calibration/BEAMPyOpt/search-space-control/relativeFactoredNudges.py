@@ -116,8 +116,20 @@ def getNudges(whichCounter):
             names.append(files[i][77:-4])  # extract file names only
         names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
         names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-        next_list = [names_sorted[0]] * 4
-        prev_list = names_sorted[1:5]
+
+        # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
+        start = 0
+        if whichCounter != 12: 
+            csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
+            csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+            if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
+                start = 1
+                if csv_4_comparison[1:6] == names_sorted[1:6]:  # checking similarity at second batch
+                    start = 2
+
+        # set df lists for computation
+        next_list = [names_sorted[start]] * 4
+        prev_list = names_sorted[start+1:start+5]
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
