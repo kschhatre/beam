@@ -43,100 +43,120 @@ def getNudges(whichCounter):
             input_vector.append(vector_4_gradients)  # 7 vector for first 8 runs based on the directionality
 
     else:
+
         '''
-        # METHOD -1 (oldest)
-        # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
-        # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
-        # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
-        # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
-        #iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
-        
-        # !! NEW METHOD 0: Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
-        
-        prev_list, next_list, names = ([] for i in range(3)) 
-        files = glob.glob(shared+'/*')
-        for i in range(len(files)):
-            names.append(files[i][77:-4])  # extract file names only
-        names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+        CSV FETCHING METHODS
+        methodA : predetermined CSV selection
+        methodB : Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
+        methodC : CSV selection based on pair who's L1 sum is least
+        methodD : CSV selection based on selection two from the whole lot
+        '''
 
-        if whichCounter == 12: # select best 5 CSVs
-            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-            next_list = [names_sorted[0]] * 4
-            prev_list = names_sorted[1:5]
-        
-        # NEW METHOD 1
+        def methodB():
+            prev_list, next_list, names = ([] for i in range(3)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
 
-        else: 
-            if whichCounter == 16:
-                list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
-            else:
-                list_one = names_sorted[whichCounter-12:whichCounter-8]
-            list_two = names_sorted[whichCounter-8:whichCounter-4] # SIZE 4
-            list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-            list_one_trunc = list_one[0:4] # SIZE 4
-            combined = [list(zip(x,list_one_trunc)) for x in itertools.permutations(list_two,len(list_one_trunc))]
-            combined_merged = list(itertools.chain(*combined))
-            unique_combined_merged = list(set(combined_merged))         # for final comparison
-            tmp_L1 = []
-            for i in range(len(unique_combined_merged)):
-                tmp_L1.append((int(unique_combined_merged[i][0].split('_')[1]),int(unique_combined_merged[i][1].split('_')[1])))
-            L1_sum_sorted= sorted(tmp_L1, key=lambda x: sum(x))
-            top_4_L1 = L1_sum_sorted[0:4]                                # for final comparison
-            for i in range(len(unique_combined_merged)):
-                if tuple((int(unique_combined_merged[i][0].split('_')[1]), int(unique_combined_merged[i][1].split('_')[1]))) in top_4_L1:
-                    next_list.append(unique_combined_merged[i][0])
-                    prev_list.append(unique_combined_merged[i][1]) 
+            if whichCounter == 12: # select best 5 CSVs
+                names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                next_list = [names_sorted[0]] * 4
+                prev_list = names_sorted[1:5]
+                
+            else: # find best CSV from either stage and create 4 pair accordingly
+                if whichCounter == 16:
+                    list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
+                else:
+                    list_one = names_sorted[whichCounter-12:whichCounter-8]
+                list_two = names_sorted[whichCounter-8:whichCounter-4]
+                list_one_min = min(list_one, key=lambda x: int(x.split('_')[1]))
+                list_two_min = min(list_two, key=lambda x: int(x.split('_')[1])) 
+                if int(list_one_min.split('_')[1]) < int(list_two_min.split('_')[1]):
+                    next_list = [list_one_min] * 4
+                    prev_list = list_two
+                else:
+                    next_list = [list_two_min] * 4
+                    list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                    prev_list = list_one[0:4]
+            return prev_list, next_list
 
-        # NEW METHOD 1 ENDS
+        def methodC():
+            prev_list, next_list, names = ([] for i in range(3)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
 
-        # PART OF METHOD 0...
+            if whichCounter == 12: # select best 5 CSVs
+                names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                next_list = [names_sorted[0]] * 4
+                prev_list = names_sorted[1:5]
+            
+            # NEW METHOD C - CSV selection based on pair who's L1 sum is least
 
-        else: # find best CSV from either stage and create 4 pair accordingly
-            if whichCounter == 16:
-                list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
-            else:
-                list_one = names_sorted[whichCounter-12:whichCounter-8]
-            list_two = names_sorted[whichCounter-8:whichCounter-4]
-            list_one_min = min(list_one, key=lambda x: int(x.split('_')[1]))
-            list_two_min = min(list_two, key=lambda x: int(x.split('_')[1])) 
-            if int(list_one_min.split('_')[1]) < int(list_two_min.split('_')[1]):
-                next_list = [list_one_min] * 4
-                prev_list = list_two
-            else:
-                next_list = [list_two_min] * 4
+            else: 
+                if whichCounter == 16:
+                    list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
+                else:
+                    list_one = names_sorted[whichCounter-12:whichCounter-8]
+                list_two = names_sorted[whichCounter-8:whichCounter-4] # SIZE 4
                 list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-                prev_list = list_one[0:4]
+                list_one_trunc = list_one[0:4] # SIZE 4
+                combined = [list(zip(x,list_one_trunc)) for x in itertools.permutations(list_two,len(list_one_trunc))]
+                combined_merged = list(itertools.chain(*combined))
+                unique_combined_merged = list(set(combined_merged))         # for final comparison
+                tmp_L1 = []
+                for i in range(len(unique_combined_merged)):
+                    tmp_L1.append((int(unique_combined_merged[i][0].split('_')[1]),int(unique_combined_merged[i][1].split('_')[1])))
+                L1_sum_sorted= sorted(tmp_L1, key=lambda x: sum(x))
+                top_4_L1 = L1_sum_sorted[0:4]                                # for final comparison
+                for i in range(len(unique_combined_merged)):
+                    if tuple((int(unique_combined_merged[i][0].split('_')[1]), int(unique_combined_merged[i][1].split('_')[1]))) in top_4_L1:
+                        next_list.append(unique_combined_merged[i][0])
+                        prev_list.append(unique_combined_merged[i][1]) 
+            return prev_list, next_list
 
-        # NEW METHOD 0 ENDS 
-        '''
+        def methodD():
+            prev_list, next_list, names = ([] for i in range(3)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
 
-        prev_list, next_list, names = ([] for i in range(3)) 
-        files = glob.glob(shared+'/*')
-        for i in range(len(files)):
-            names.append(files[i][77:-4])  # extract file names only
-        names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
-        names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+            # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
+            start = 0
+            if whichCounter != 12: 
+                csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
+                csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
+                    start = 1
+                    if csv_4_comparison[1:6] == names_sorted[1:6]:  # checking similarity at second batch
+                        start = 2
 
-        # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
-        start = 0
-        if whichCounter != 12: 
-            csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
-            csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-            if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
-                start = 1
-                if csv_4_comparison[1:6] == names_sorted[1:6]:  # checking similarity at second batch
-                    start = 2
+            # set df lists for computation
+            next_list = [names_sorted[start]] * 4
+            prev_list = names_sorted[start+1:start+5]
+            return prev_list, next_list
 
-        # set df lists for computation
-        next_list = [names_sorted[start]] * 4
-        prev_list = names_sorted[start+1:start+5]
+        if nudge_method == 'methodA':
+            # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
+            # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
+            # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
+            # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
+            iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
+        else:
+            prev_list, next_list = eval(nudge_method)
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
-            #df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
-            #df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0]) 
-            df_prev =  pd.read_csv(shared+'/'+prev_list[i]+'.csv')  
-            df_next =  pd.read_csv(shared+'/'+next_list[i]+'.csv')  
+            if nudge_method == 'methodA':
+                df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
+                df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0])
+            else: 
+                df_prev =  pd.read_csv(shared+'/'+prev_list[i]+'.csv')  
+                df_next =  pd.read_csv(shared+'/'+next_list[i]+'.csv')  
             # Create a separate df from df_next with 2 cols: L1 and L1_rank
             Rank_L1_df = df_next.loc[3:4].T 
             # Compute relative ratios of top 4 worst performing mode choices wrt to observed L1 norms
