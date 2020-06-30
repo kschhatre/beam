@@ -49,7 +49,7 @@ def getNudges(whichCounter):
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
         #iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
         
-        # !! NEW METHOD: Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
+        # !! NEW METHOD 0: Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
         
         prev_list, next_list, names = ([] for i in range(3)) 
         files = glob.glob(shared+'/*')
@@ -61,6 +61,31 @@ def getNudges(whichCounter):
             names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
             next_list = [names_sorted[0]] * 4
             prev_list = names_sorted[1:5]
+        
+        else: # NEW METHOD 1
+            if whichCounter == 16:
+                list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
+            else:
+                list_one = names_sorted[whichCounter-12:whichCounter-8]
+            list_two = names_sorted[whichCounter-8:whichCounter-4] # SIZE 4
+            list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+            list_one_trunc = list_one[0:4] # SIZE 4
+            combined = [list(zip(x,list_one_trunc)) for x in itertools.permutations(list_two,len(list_one_trunc))]
+            combined_merged = list(itertools.chain(*combined))
+            unique_combined_merged = list(set(combined_merged))         # for final comparison
+            tmp_L1 = []
+            for i in range(len(unique_combined_merged)):
+                tmp_L1.append((int(unique_combined_merged[i][0].split('_')[1]),int(unique_combined_merged[i][1].split('_')[1])))
+            L1_sum_sorted= sorted(tmp_L1, key=lambda x: sum(x))
+            top_4_L1 = L1_sum_sorted[0:4]                                # for final comparison
+            for i in range(len(unique_combined_merged)):
+                if tuple((int(unique_combined_merged[i][0].split('_')[1]), int(unique_combined_merged[i][1].split('_')[1]))) in top_4_L1:
+                    next_list.append(unique_combined_merged[i][0])
+                    prev_list.append(unique_combined_merged[i][1]) 
+
+        # NEW METHOD 1 ENDS
+
+        '''
         else: # find best CSV from either stage and create 4 pair accordingly
             if whichCounter == 16:
                 list_one = names_sorted[whichCounter-16:whichCounter-8] # leveraging to look at all 8 outputs so as to choose the best four CSVs
@@ -76,8 +101,8 @@ def getNudges(whichCounter):
                 next_list = [list_two_min] * 4
                 list_one.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 prev_list = list_one[0:4]
-
-        # NEW METHOD ENDS 
+        '''
+        # NEW METHOD 0 ENDS 
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
