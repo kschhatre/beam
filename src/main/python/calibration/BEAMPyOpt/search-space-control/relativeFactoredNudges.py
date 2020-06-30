@@ -162,7 +162,7 @@ def getNudges(whichCounter):
             # Compute relative ratios of top 4 worst performing mode choices wrt to observed L1 norms
             # Example: {'ride_hail': 1.0, 'walk_transit': 0.45877255803345796, 'walk': 0.40894045161300785, 'ride_hail_transit': 0.3808596172941896}
             fetch_ratios = {}
-            for i in range(1,5):
+            for i in range(1,9): # finding ratios for all 8 choices
                 fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0] / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             relative_variation_factor = df_next.loc[3].to_dict()
             del relative_variation_factor['iterations']
@@ -179,7 +179,7 @@ def getNudges(whichCounter):
             # check if L1 has decreased or not: 1 yes, 0 no
             compute_df.loc['L1_progress'] = [ 1 if min([compute_df.loc[1][x], compute_df.loc[3][x]], key=abs) == compute_df.loc[3][x]  else 0 for x in range(len(compute_df.loc[3]))]
             # check if modes were incremented or decremented: 1 decremented, 0 incremented
-            compute_df.loc['m_progress'] = [ 1 if min([compute_df.loc[0][x], compute_df.loc[2][x]], key=abs) == compute_df.loc[2][x]  else 0 for x in range(len(compute_df.loc[3]))]
+            compute_df.loc['m_progress'] = [ 1 if compute_df.loc[0][x] > compute_df.loc[2][x] else 0 for x in range(len(compute_df.loc[3]))]
             # compute direction for the nudge: 1 negative, 0 positive
             # Analogy: if L1 has decreased -> follow the same pattern in modes(increments remains increment and so on), otherwise reverse the sign (increments changes to decrement and so on)
             compute_df.loc['nudge_direction'] = [ compute_df.loc['m_progress'][x] if compute_df.loc['L1_progress'][x].astype(int) == 1  else 1-compute_df.loc['m_progress'][x].astype(int) for x in range(len(compute_df.loc[3]))]
