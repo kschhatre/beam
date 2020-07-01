@@ -145,7 +145,7 @@ def getNudges(whichCounter):
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
-        prev_list, next_list = methodC()
+        prev_list, next_list = methodD()
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
