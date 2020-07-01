@@ -178,6 +178,7 @@ def getNudges(whichCounter):
 
             # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
             end = 0
+            start = 0
             if whichCounter != 12: 
                 csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
                 csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
