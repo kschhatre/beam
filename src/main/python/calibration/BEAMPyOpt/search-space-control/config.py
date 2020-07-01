@@ -21,5 +21,3 @@ runme=beam + '/runme.sh'
 
 writecue = beam + '/writecue.txt'
 firecue = beam + '/firecue.txt'
-
-nudge_method = 'methodC'
