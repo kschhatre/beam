@@ -51,6 +51,7 @@ def getNudges(whichCounter):
         methodC : CSV selection based on pair who's L1 sum is least
         methodD : CSV selection based on selection two from the whole lot
         methodE : 1 best from the whole lot with combination of 2 best and 2 worst to acheive larger dL1/dm
+        methodF : 1 best vs 4 worst from all batch
         '''
 
         def methodB():
@@ -167,6 +168,29 @@ def getNudges(whichCounter):
             prev_list = names_sorted[start+1:start+3] + names_sorted[-2+end:len(names_sorted)+end]  
             return prev_list, next_list
 
+        def methodF():
+            prev_list, next_list, names = ([] for i in range(3)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+
+            # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
+            end = 0
+            if whichCounter != 12: 
+                csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
+                csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                if csv_4_comparison[-4:len(csv_4_comparison)] == names_sorted[-4:len(names_sorted)]: 
+                    end = -1
+                    if csv_4_comparison[-3:len(csv_4_comparison)-1] == names_sorted[-3:len(names_sorted)-1]: 
+                        end = -2
+
+            # set df lists for computation
+            next_list = [names_sorted[start]] * 4
+            prev_list = names_sorted[-4+end:len(names_sorted)+end]  
+            return prev_list, next_list
+
         #for 'methodA'
         # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
         # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
@@ -174,7 +198,7 @@ def getNudges(whichCounter):
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
-        prev_list, next_list = methodE()
+        prev_list, next_list = methodF()
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
