@@ -92,8 +92,6 @@ def getNudges(whichCounter):
                 names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 next_list = [names_sorted[0]] * 4
                 prev_list = names_sorted[1:5]
-            
-            # NEW METHOD C - CSV selection based on pair who's L1 sum is least
 
             else: 
                 if whichCounter == 16:
@@ -140,23 +138,25 @@ def getNudges(whichCounter):
             prev_list = names_sorted[start+1:start+5]
             return prev_list, next_list
 
-        if nudge_method == 'methodA':
-            # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
-            # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
-            # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
-            # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
-            iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
-        else:
-            prev_list, next_list = globals()[nudge_method]()
+        #for 'methodA'
+        # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
+        # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
+        # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
+        # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
+        iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
+
+        prev_list, next_list = methodC()
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
-            if nudge_method == 'methodA':
-                df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
-                df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0])
-            else: 
-                df_prev =  pd.read_csv(shared+'/'+prev_list[i]+'.csv')  
-                df_next =  pd.read_csv(shared+'/'+next_list[i]+'.csv')  
+            
+            #for 'methodA'
+            #df_prev =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_prev[i])+'_*.csv')[0])
+            #df_next =  pd.read_csv(glob.glob(shared+'/'+str(whichCounter-iterators_next[i])+'_*.csv')[0])
+
+            # otherwise for methodB methodC methodD
+            df_prev =  pd.read_csv(shared+'/'+prev_list[i]+'.csv')  
+            df_next =  pd.read_csv(shared+'/'+next_list[i]+'.csv')  
             # Create a separate df from df_next with 2 cols: L1 and L1_rank
             Rank_L1_df = df_next.loc[3:4].T 
             # Compute relative ratios of top 4 worst performing mode choices wrt to observed L1 norms
