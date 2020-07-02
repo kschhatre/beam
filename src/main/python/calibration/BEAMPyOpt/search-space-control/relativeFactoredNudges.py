@@ -118,6 +118,7 @@ def getNudges(whichCounter):
             return prev_list, next_list
 
         def methodD():
+            print('Fetch method is D')
             prev_list, next_list, names = ([] for i in range(3)) 
             files = glob.glob(shared+'/*')
             for i in range(len(files)):
@@ -216,6 +217,8 @@ def getNudges(whichCounter):
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
         prev_list, next_list = methodD()
+        print('Prev list is ', prev_list)
+        print('Next list is ', next_list)
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
