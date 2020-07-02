@@ -47,9 +47,9 @@ def getNudges(whichCounter):
         '''
         CSV FETCHING METHODS
         methodA : predetermined CSV selection
-        methodB : Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv!
+        methodB : Chooses the best csv from either group and create 4 pairs from two groups where one side its only one csv and other side 4
         methodC : CSV selection based on pair who's L1 sum is least
-        methodD : CSV selection based on selection two from the whole lot
+        methodD : CSV selection based on selection two best from the whole lot, 4 such pair, one side one csv, other side 2nd-5th best 4 csv
         methodE : 1 best from the whole lot with combination of 2 best and 2 worst to acheive larger dL1/dm
         methodF : 1 best vs 4 worst from all batch
         '''
@@ -199,7 +199,7 @@ def getNudges(whichCounter):
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
-        prev_list, next_list = methodF()
+        prev_list, next_list = methodD()
 
         for i in range(4):
             print('Computing nudges for '+str(i+1)+' substage...')
