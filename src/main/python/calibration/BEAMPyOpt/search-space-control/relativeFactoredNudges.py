@@ -132,8 +132,6 @@ def getNudges(whichCounter):
                 csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
                     start = 1
-                    if csv_4_comparison[1:6] == names_sorted[1:6]:  # checking similarity at second batch
-                        start = 2
 
             # set df lists for computation
             next_list = [names_sorted[start]] * 4
