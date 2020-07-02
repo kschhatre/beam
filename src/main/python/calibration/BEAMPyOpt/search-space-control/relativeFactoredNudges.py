@@ -130,8 +130,18 @@ def getNudges(whichCounter):
             if whichCounter != 12: 
                 csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
                 csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                csv_4_comparison1 = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-12] # sort with iteration number upto whichCounter-8
+                csv_4_comparison1.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+                csv_4_comparison2 = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-16] # sort with iteration number upto whichCounter-8
+                csv_4_comparison2.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
                     start = 1
+                    if whichCounter != 16:
+                        if csv_4_comparison1[0:5] == names_sorted[1:6]:
+                            start = 2
+                        if whichCounter != 20:
+                            if csv_4_comparison2[0:5] == names_sorted[2:7]:
+                                start = 3
 
             # set df lists for computation
             next_list = [names_sorted[start]] * 4
