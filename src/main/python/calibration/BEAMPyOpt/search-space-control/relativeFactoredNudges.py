@@ -138,10 +138,10 @@ def getNudges(whichCounter):
                 if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
                     start = 1
                     if whichCounter != 16:
-                        if csv_4_comparison1[0:5] == names_sorted[1:6]:
+                        if csv_4_comparison1[0:5] == names_sorted[0] + names_sorted[2:6]: 
                             start = 2
                         if whichCounter != 20:
-                            if csv_4_comparison2[0:5] == names_sorted[2:7]:
+                            if csv_4_comparison2[0:5] == names_sorted[0] + names_sorted[3:7]:
                                 start = 3
             # old if loop
             '''
@@ -153,7 +153,7 @@ def getNudges(whichCounter):
             '''
 
             # set df lists for computation
-            next_list = [names_sorted[start]] * 4
+            next_list = [names_sorted[0]] * 4
             prev_list = names_sorted[start+1:start+5]
             return prev_list, next_list
 
