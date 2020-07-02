@@ -2,7 +2,7 @@ beam = '/home/ubuntu/kiran_thesis/beam'
 # alternative path for local repository
 #beam = '/home/berkeleylab/kiran_thesis/beam'
 
-total_rel_nudge_trials = 48 # should always be even and multiple of 4
+total_rel_nudge_trials = 100 # should always be even and multiple of 4
 
 shared = beam + '/src/main/python/calibration/BEAMPyOpt/storage' 
 search_space= beam + '/src/main/python/calibration/BEAMPyOpt/search-space-control'
