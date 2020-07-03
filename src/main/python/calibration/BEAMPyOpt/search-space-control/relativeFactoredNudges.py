@@ -202,8 +202,10 @@ def getNudges(whichCounter):
             names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
 
             # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
-            with open("fetched_files.txt", "rb") as fp:
-                validate = pickle.load(fp) 
+            try:
+                validate = pickle.load(open("fetched_files.txt","rb"))
+            except EOFError:
+                validate = []
 
             if not validate:
                 pass
@@ -211,7 +213,7 @@ def getNudges(whichCounter):
                 old_compared_csv = []
                 for i in range(len(validate)): 
                     if names_sorted[0] == validate[i][0]: 
-                        old_compared_csv.append(validate[i][1:4])
+                        old_compared_csv.append(validate[i][1:5]) 
                 old_compared_csv = list(itertools.chain(*old_compared_csv)) # flatten
                 old_compared_csv = list(set(old_compared_csv)) # remove duplicates
                 
