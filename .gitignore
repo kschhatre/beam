@@ -55,3 +55,11 @@ src/main/scala/beam/sandbox
 test/scala/beam/sandbox
 log-path_IS_UNDEFINED/
 .Rproj.user
+*/__pycache__/*
+*.pyc
+src/main/python/calibration/BEAMPyOpt/storage/
+test/input/sf-light/urbansim-10k_*
+instanceconfpath.txt
+*.txt
+v8.6.0.0/
+ssc_*.log
