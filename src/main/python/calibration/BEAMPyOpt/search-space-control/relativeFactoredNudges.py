@@ -2,7 +2,7 @@
 # Implementation 2 related
 import numpy as np 
 import pandas as pd 
-import itertools, glob, fnmatch, os, random, csv, math
+import itertools, glob, fnmatch, os, random, csv, math, pickle
 from natsort import natsorted
 import warnings
 from config import *
@@ -52,6 +52,7 @@ def getNudges(whichCounter):
         methodD : CSV selection based on selection two best from the whole lot, 4 such pair, one side one csv, other side 2nd-5th best 4 csv
         methodE : 1 best from the whole lot with combination of 2 best and 2 worst to acheive larger dL1/dm
         methodF : 1 best vs 4 worst from all batch
+        methodG : advanced methodD
         '''
 
         def methodB():
@@ -131,26 +132,8 @@ def getNudges(whichCounter):
             if whichCounter != 12: 
                 csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
                 csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-                csv_4_comparison1 = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-12] # sort with iteration number upto whichCounter-8
-                csv_4_comparison1.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-                csv_4_comparison2 = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-16] # sort with iteration number upto whichCounter-8
-                csv_4_comparison2.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
                 if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
                     start = 1
-                    if whichCounter != 16:
-                        if csv_4_comparison1[0:5] == names_sorted[0] + names_sorted[2:6]: 
-                            start = 2
-                        if whichCounter != 20:
-                            if csv_4_comparison2[0:5] == names_sorted[0] + names_sorted[3:7]:
-                                start = 3
-            # old if loop
-            '''
-            if whichCounter != 12: 
-                csv_4_comparison = natsorted(names, key=lambda x: x.split('_')[0])[0:whichCounter-8] # sort with iteration number upto whichCounter-8
-                csv_4_comparison.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
-                if csv_4_comparison[0:5] == names_sorted[0:5]:      # checking similarity at first batch
-                    start = 1
-            '''
 
             # set df lists for computation
             next_list = [names_sorted[0]] * 4
@@ -208,6 +191,53 @@ def getNudges(whichCounter):
             next_list = [names_sorted[start]] * 4
             prev_list = names_sorted[-4+end:len(names_sorted)+end]  
             return prev_list, next_list
+        
+        def methodG():
+            print('Fetch method is G')
+            prev_list, next_list, names = ([] for i in range(3)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+
+            # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
+            with open("fetched_files.txt", "rb") as fp:
+                validate = pickle.load(fp) 
+
+            if not validate:
+                pass
+            else:
+                old_compared_csv = []
+                for i in range(len(validate)): 
+                    if names_sorted[0] == validate[i][0]: 
+                        old_compared_csv.append(validate[i][1:4])
+                old_compared_csv = list(itertools.chain(*old_compared_csv)) # flatten
+                old_compared_csv = list(set(old_compared_csv)) # remove duplicates
+                
+                for i in range(len(names_sorted)-1):
+                    if names_sorted[i+1] in old_compared_csv:
+                        pass
+                    else:
+                        prev_list.append(names_sorted[i+1])
+                prev_list.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+
+            # set df lists for computation
+            next_list = [names_sorted[0]] * 4
+            prev_list = prev_list[0:4] 
+            
+            if not validate:
+                updated_fetched_list = [[names_sorted[0]] + prev_list] 
+            else:
+                what_to_append = [names_sorted[0]] + prev_list
+                validate.append(what_to_append)
+                updated_fetched_list = validate
+
+            with open("fetched_files.txt", "wb") as fp: #how to save in format [[56], [55],[66]]
+                pickle.dump(updated_fetched_list, fp)
+
+            return prev_list, next_list
+
 
         #for 'methodA'
         # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
@@ -216,7 +246,7 @@ def getNudges(whichCounter):
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
         iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
-        prev_list, next_list = methodD()
+        prev_list, next_list = methodG()
         print('Prev list is ', prev_list)
         print('Next list is ', next_list)
 
