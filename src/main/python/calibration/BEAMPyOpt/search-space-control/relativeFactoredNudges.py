@@ -208,7 +208,7 @@ def getNudges(whichCounter):
                 validate = []
 
             if not validate:
-                pass
+                prev_list = names_sorted[1:5]
             else:
                 for i in range(len(validate)): 
                     if names_sorted[0] == validate[i][0]: 
@@ -226,7 +226,7 @@ def getNudges(whichCounter):
             # set df lists for computation
             next_list = [names_sorted[0]] * 4
             prev_list = prev_list[0:4] 
-            
+
             if not validate:
                 updated_fetched_list = [[names_sorted[0]] + prev_list] 
             else:
