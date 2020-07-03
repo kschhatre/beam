@@ -194,7 +194,7 @@ def getNudges(whichCounter):
         
         def methodG():
             print('Fetch method is G')
-            prev_list, next_list, names = ([] for i in range(3)) 
+            prev_list, next_list, names, old_compared_csv = [] = ([] for i in range(4)) 
             files = glob.glob(shared+'/*')
             for i in range(len(files)):
                 names.append(files[i][77:-4])  # extract file names only
@@ -210,7 +210,6 @@ def getNudges(whichCounter):
             if not validate:
                 pass
             else:
-                old_compared_csv = []
                 for i in range(len(validate)): 
                     if names_sorted[0] == validate[i][0]: 
                         old_compared_csv.append(validate[i][1:5]) 
