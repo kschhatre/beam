@@ -241,6 +241,88 @@ def getNudges(whichCounter):
 
             return prev_list, next_list
 
+        def methodH():
+            print('Fetch method is H')
+            prev_list1, prev_list, next_list, names, old_compared_csv = [] = ([] for i in range(5)) 
+            files = glob.glob(shared+'/*')
+            for i in range(len(files)):
+                names.append(files[i][77:-4])  # extract file names only
+            names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
+            names_sorted.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+
+            # Comparison loop to avoid duplicate stage runs which starts with 12,16,20,24...
+            try:
+                validate = pickle.load(open("fetched_files.txt","rb"))
+            except EOFError:
+                validate = []
+
+            if validate:
+                for i in range(len(validate)): 
+                    if names_sorted[0] == validate[i][0]:  # validate is [ [a,b]  , [v,r] ... ]
+                        old_compared_csv.append(validate[i][1:5]) 
+                old_compared_csv = list(itertools.chain(*old_compared_csv)) # flatten
+                old_compared_csv = list(set(old_compared_csv)) # remove duplicates
+                
+                for i in range(len(names_sorted)-1):
+                    if names_sorted[i+1] in old_compared_csv:
+                        pass
+                    else:
+                        prev_list1.append(names_sorted[i+1])
+                prev_list1.sort(key=lambda x: int(x.split('_')[1])) # sort with L1 norm values
+
+            min_err = names_sorted[0].split('_')[1]
+            ''' OTHER EXPERIMENTED STUFF FROM MNL, DIDNT VALIDATE
+            best=[]
+            for i in range(len(names_sorted)):
+                if names_sorted[i].split('_')[1] == min_err:
+                    best.append(names_sorted[i])
+            random.shuffle(best) 
+            next_list = best[0] 
+            '''
+            next_list = [names_sorted[0]] * 4
+            for_prev=[]
+            for i in range(len(prev_list1)):
+                if prev_list1[i].split('_')[1] != min_err:
+                    for_prev.append(prev_list1[i])
+            for_prev.sort(key=lambda x: int(x.split('_')[1])) 
+
+            if validate:
+                prev_list = for_prev[0:4]
+            else:
+                prev_list = names_sorted[1:5] 
+            '''  NOT REQUIRED NOW
+            if len(names_sorted[0].split('_')[1]) == 1:
+                if names_sorted[0].split('_')[1] == '2' or names_sorted[0].split('_')[1] == '1':
+                    best_n=[]
+                    for i in range(len(names_sorted)):
+                        if names_sorted[i].split('_')[1] == min_err:
+                            best_n.append(names_sorted[i])
+                    random.shuffle(best_n) 
+                    next_list = best_n[0]
+                    best_p = [item for item in names_sorted if item not in best_n]
+                    best_p.sort(key=lambda x: int(x.split('_')[1]))
+                    nex_min_err = best_p[0].split('_')[1]
+                    leaving_one_set = []
+                    for i in range(len(best_p)):
+                        if best_p[i].split('_')[1] == nex_min_err:
+                            leaving_one_set.append(best_p[i])
+                    random.shuffle(leaving_one_set)
+                    prev_list = leaving_one_set[0] 
+            '''
+
+            if not validate:
+                updated_fetched_list = [[next_list[0]] + prev_list] 
+            else:
+                what_to_append = [next_list[0]] + prev_list
+                validate.append(what_to_append)
+                updated_fetched_list = validate
+
+
+            with open("fetched_files.txt", "wb") as fp: #how to save in format [[56], [55],[66]]
+                pickle.dump(updated_fetched_list, fp)
+
+            return prev_list, next_list
+
 
         #for 'methodA'
         # example if last needed csv = 12 (say 'i'), we will compute nudges for 9,10,11,12 trails from (1,5),(2,6),(3,7), and (4,8) pairs.
@@ -250,7 +332,7 @@ def getNudges(whichCounter):
         # BOTTOM LINE IS BROKEN FOR INIT 16 RANDOM RUNS, only works for 8 random runs
         #iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
-        prev_list, next_list = methodG()
+        prev_list, next_list = methodH()
         print('Prev list is ', prev_list)
         print('Next list is ', next_list)
 
@@ -269,8 +351,30 @@ def getNudges(whichCounter):
             # Compute relative ratios of top 4 worst performing mode choices wrt to observed L1 norms
             # Example: {'ride_hail': 1.0, 'walk_transit': 0.45877255803345796, 'walk': 0.40894045161300785, 'ride_hail_transit': 0.3808596172941896}
             fetch_ratios = {}
+            ''' modifying as inpired from MNL
             for i in range(1,9): # finding ratios for all 8 choices
                 fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0] / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            '''
+
+            if len(next_list.split('_')[1]) == 2 and next_list.split('_')[1] == '10':
+                for i in range(1,5): # finding ratios for 4 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            elif len(next_list.split('_')[1]) == 1 and next_list.split('_')[1] == '9':
+                for i in range(1,4): # finding ratios for 3 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            elif len(next_list.split('_')[1]) == 1 and next_list.split('_')[1] == '8':
+                for i in range(1,3): # finding ratios for 2 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            elif len(next_list.split('_')[1]) == 1 and next_list.split('_')[1] == '7':
+                for i in range(1,5): # finding ratios for 4 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            elif len(next_list.split('_')[1]) == 1 and next_list.split('_')[1] == '6':
+                for i in range(1,5): # finding ratios for 4 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            else:
+                for i in range(1,9): # finding ratios for all 8 choices
+                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
+            
             relative_variation_factor = df_next.loc[3].to_dict()
             del relative_variation_factor['iterations']
             relative_variation_factor = dict.fromkeys(relative_variation_factor, 0)
