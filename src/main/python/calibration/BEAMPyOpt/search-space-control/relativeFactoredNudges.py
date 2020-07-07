@@ -12,12 +12,14 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def getNudges(whichCounter):
 
     input_vector = []
-    rel_nudge_stages = list(range(8,total_rel_nudge_trials+1,4)) # [8, 12, 16, 20, 24, 28, 32, 36]
+    rel_nudge_stages = list(range(16,total_rel_nudge_trials+1,4)) # total init random runs = 8 [8, 12, 16, 20, 24, 28, 32, 36] 
 
-    if whichCounter == 8:
+    if whichCounter == 16:                                        # total init random runs = 8
         last_needed_csv = 1
     else:
-        last_needed_csv = rel_nudge_stages[rel_nudge_stages.index(whichCounter)-1] 
+        quotient = (whichCounter - 17)//4                         # total init random runs = NEW SETUP!
+        #last_needed_csv = rel_nudge_stages[rel_nudge_stages.index(whichCounter)-1] 
+        last_needed_csv = rel_nudge_stages[quotient]               # total init random runs = NEW SETUP!
 
     last_needed_csv_path = glob.glob(shared+'/'+str(last_needed_csv)+'_*.csv')[0] 
     validate = any([len(fnmatch.filter(os.listdir(shared), '*.csv')) == last_needed_csv, len(fnmatch.filter(os.listdir(shared), '*.csv')) > last_needed_csv-1]) 
@@ -28,19 +30,19 @@ def getNudges(whichCounter):
         time.sleep(5)
         print('Waiting to validate required number of csv files for nudge compuations...')  
 
-    if whichCounter == 8:
+    if whichCounter == 16:                                       # total init random runs = 8
         print('Creating nudges for stage 1...')
         csv_name = glob.glob(shared+'/1_*.csv')[0]  
         df =  pd.read_csv(csv_name)
-        for j in range(7): 
+        for j in range(15):                                      # total init random runs = 7
             vector_4_gradients = []
             for i in range(1,len(df.loc[5])):
                 if (df.loc[5][i] == 1):
-                    vector_4_gradients.append(random.sample(range(1, 18),1))
+                    vector_4_gradients.append([np.random.uniform(0,15)])           # modified limits to 0 +15
                 else:
-                    vector_4_gradients.append(random.sample(range(-18, -1),1))
+                    vector_4_gradients.append([np.random.uniform(-12,-7)])         # modified limits to -12 -7
             vector_4_gradients = list(itertools.chain(*vector_4_gradients))
-            input_vector.append(vector_4_gradients)  # 7 vector for first 8 runs based on the directionality
+            input_vector.append(vector_4_gradients)  # 15 vector for first 16 runs based on the directionality
 
     else:
 
