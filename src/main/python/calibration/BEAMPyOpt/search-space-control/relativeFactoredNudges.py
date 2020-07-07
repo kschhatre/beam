@@ -247,7 +247,8 @@ def getNudges(whichCounter):
         # input_vector = i-3 i-2 i-1 i-0   |@16| 13 14 15 16  |@12| 9 10 11 12
         # prev         = i-11 i-10 i-9 i-8 |   | 5 6 7 8      |   | 1 2 3 4
         # next         = i-7 i-6 i-5 i-4   |   | 9 10 11 12   |   | 5 6 7 8
-        iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
+        # BOTTOM LINE IS BROKEN FOR INIT 16 RANDOM RUNS, only works for 8 random runs
+        #iterators_ip_vec, iterators_prev, iterators_next = list(range(3,-1,-1)), list(range(11,7,-1)), list(range(7,3,-1))
 
         prev_list, next_list = methodG()
         print('Prev list is ', prev_list)
