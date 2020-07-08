@@ -12,12 +12,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def getNudges(whichCounter):
 
     input_vector = []
-    rel_nudge_stages = list(range(16,total_rel_nudge_trials+1,4)) # total init random runs = 8 [8, 12, 16, 20, 24, 28, 32, 36] 
+    rel_nudge_stages = list(range(init_runs,total_rel_nudge_trials+1,4)) # total init random runs = 8 [8, 12, 16, 20, 24, 28, 32, 36] 
 
-    if whichCounter == 16:                                        # total init random runs = 8
+    if whichCounter == init_runs:                                        # total init random runs = 8
         last_needed_csv = 1
     else:
-        quotient = (whichCounter - 17)//4                         # total init random runs = NEW SETUP!
+        quotient = (whichCounter - init_runs + 1)//4                         # total init random runs = NEW SETUP! old=17 for 16
         #last_needed_csv = rel_nudge_stages[rel_nudge_stages.index(whichCounter)-1] 
         last_needed_csv = rel_nudge_stages[quotient]               # total init random runs = NEW SETUP!
 
@@ -30,11 +30,11 @@ def getNudges(whichCounter):
         time.sleep(5)
         print('Waiting to validate required number of csv files for nudge compuations...')  
 
-    if whichCounter == 16:                                       # total init random runs = 8
+    if whichCounter == init_runs:                                       # total init random runs = 8
         print('Creating nudges for stage 1...')
         csv_name = glob.glob(shared+'/1_*.csv')[0]  
         df =  pd.read_csv(csv_name)
-        for j in range(15):                                      # total init random runs = 7
+        for j in range(init_runs-1):                                      # total init random runs = 7
             vector_4_gradients = []
             for i in range(1,len(df.loc[5])):
                 if (df.loc[5][i] == 1):

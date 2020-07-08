@@ -13,7 +13,7 @@ warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 # NO MECHANISM TO START 0TH ITERATION WITH ALL ZERO INTERCEPTS. Design it accordingly! Current workaround: run correlational_1.py before running parallelizer_1.py
 
 # iterator
-rel_nudge_stages = list(range(16,total_rel_nudge_trials+1,4)) # total init random runs = 8 ; 8, 12, 16, 20, 24, 28, 32, 36
+rel_nudge_stages = list(range(init_runs,total_rel_nudge_trials+1,4)) # total init random runs = 8 ; 8, 12, 16, 20, 24, 28, 32, 36
 
 # constants
 finaliteration = '0'
@@ -23,7 +23,7 @@ q = 13 # last iterations
 # Methods
 
 def create_conf_copies(no_iters, which_stage):    
-    if which_stage == 16:                                               # total init random runs = 8 
+    if which_stage == init_runs:                                               # total init random runs = 8 
         for num in range(no_iters): # no_iters = 7
             shutil.copy(base_urbansim_config, copy_urbansim_config % (num+2))  
     else: # which_stage is 12, 16, 20, 24, 28, 32, 36
@@ -88,8 +88,8 @@ def change_conf(input_vector, filename):
 
 def vector(whichCounter):
     input_vector = getNudges(whichCounter)  
-    if whichCounter == 16:                               # total init random runs = 8 
-        required = 15                                    # total init random runs = 7
+    if whichCounter == init_runs:                               # total init random runs = 8 
+        required = init_runs-1                                    # total init random runs = 7
     else:
         required = 4
     while True:      
@@ -148,8 +148,8 @@ def recipe():
                     break    
         print('Recipe method initialized at stage '+str(i+1)+'!') 
         input_vector_now = vector(whichCounter=rel_nudge_stages[i]) 
-        if len(input_vector_now) == 15: # [[...],[...],[...],[...],[...],[...],[...]]  # total init random runs = 7
-            parallel_passes = 15                                                       # total init random runs = 7
+        if len(input_vector_now) == init_runs-1: # [[...],[...],[...],[...],[...],[...],[...]]  # total init random runs = 7
+            parallel_passes = init_runs-1                                                       # total init random runs = 7
         else: # len(input_vector_now) == 4
             parallel_passes = 4
 
@@ -158,7 +158,7 @@ def recipe():
         create_conf_copies(no_iters=parallel_passes,which_stage=which_stage)
         print('Conf copies created for stage '+str(i+1)+'!') 
         for j in range(parallel_passes):
-            if which_stage == 16:                                                        # total init random runs = 8 
+            if which_stage == init_runs:                                                        # total init random runs = 8 
                 picked_conf_file = copy_urbansim_config % (j+2) 
                 filename = copy_urbansim_txt % (j+2)  
                 ext_change('edit', picked_conf_file, filename)
@@ -204,7 +204,7 @@ def bookkeep(which_stage):
     import os
     name = multiprocessing.current_process().name
     if which_stage == 1:
-        how_many = 15                                                            # total init random runs = 7
+        how_many = init_runs-1                                                            # total init random runs = 7
         output_folders = find_op_folder(parallel_passes=how_many,neglect=[])
         with open("op_folders.txt", "wb") as fp:
             pickle.dump(output_folders, fp) 
@@ -246,7 +246,7 @@ def bookkeep(which_stage):
             csv_name = output_csv % (j+2, total_L1) 
             modify_csv(csv_name=csv_name)
         else:
-            offset_labeling_list = list(range(15,total_rel_nudge_trials+1,3))          # total init random runs = 7
+            offset_labeling_list = list(range(init_runs-1,total_rel_nudge_trials+1,3))          # total init random runs = 7
             iter_label = offset_labeling_list[which_stage-2] + int(which_stage) + j 
             df.to_csv(output_csv % (iter_label, total_L1), sep='\t', encoding='utf-8')   
             csv_name = output_csv % (iter_label, total_L1) 
