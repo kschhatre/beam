@@ -17,7 +17,7 @@ def getNudges(whichCounter):
     if whichCounter == init_runs:                                        # total init random runs = 8
         last_needed_csv = 1
     else:
-        quotient = (whichCounter - init_runs + 1)//4                         # total init random runs = NEW SETUP! old=17 for 16
+        quotient = (whichCounter - init_runs - 1)//4                         # total init random runs = NEW SETUP! old=17 for 16
         #last_needed_csv = rel_nudge_stages[rel_nudge_stages.index(whichCounter)-1] 
         last_needed_csv = rel_nudge_stages[quotient]               # total init random runs = NEW SETUP!
 
