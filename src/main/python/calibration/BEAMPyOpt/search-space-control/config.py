@@ -21,3 +21,5 @@ runme=beam + '/runme.sh'
 
 writecue = beam + '/writecue.txt'
 firecue = beam + '/firecue.txt'
+
+init_runs = 32
