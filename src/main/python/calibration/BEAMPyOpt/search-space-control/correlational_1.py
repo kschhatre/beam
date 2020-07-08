@@ -20,7 +20,7 @@ shutil.copy(base_urbansim_config, copy_urbansim_config % (num))
 picked_conf_file = copy_urbansim_config % (num)   # label the file
 filename = copy_urbansim_txt % (num)
 #input_vector = [0,0,0,0,0,0,0,0]
-input_vector = [-12,1.5,6.25,0.5,-7.5,0,14.25,4.75]
+input_vector = [-12,1.5,6.25,0.5,-7.5,0,14.25,4.75] # in case you want to initiate at best intercepts
 finaliteration = '0'
 ext_change('edit', picked_conf_file, filename)
 change_conf(input_vector=input_vector, filename=filename)
@@ -49,7 +49,9 @@ else:
 
 df.loc[1,'iterations'] = 'modeshare_now'
 del df['cav']
-df.loc[-1] = ['intercepts_now', 0,0,0,0,0,0,0,0]
+input_vector.insert(0, "intercepts_now")
+df.loc[-1] = input_vector
+#df.loc[-1] = ['intercepts_now', 0,0,0,0,0,0,0,0]
 df.index = df.index+1 
 df.sort_index(inplace=True)
 df.set_index('iterations', inplace=True)
