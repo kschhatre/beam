@@ -290,9 +290,10 @@ def getNudges(whichCounter):
                 prev_list = for_prev[0:4]
             else:
                 prev_list = names_sorted[1:5] 
-            '''  NOT REQUIRED NOW
+                
+            # only for 5 and 6 error
             if len(names_sorted[0].split('_')[1]) == 1:
-                if names_sorted[0].split('_')[1] == '2' or names_sorted[0].split('_')[1] == '1':
+                if names_sorted[0].split('_')[1] == '5' or names_sorted[0].split('_')[1] == '6':
                     best_n=[]
                     for i in range(len(names_sorted)):
                         if names_sorted[i].split('_')[1] == min_err:
@@ -308,7 +309,6 @@ def getNudges(whichCounter):
                             leaving_one_set.append(best_p[i])
                     random.shuffle(leaving_one_set)
                     prev_list = leaving_one_set[0] 
-            '''
 
             if not validate:
                 updated_fetched_list = [[next_list[0]] + prev_list] 
@@ -356,20 +356,14 @@ def getNudges(whichCounter):
                 fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0] / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             '''
 
-            if len(next_list[0].split('_')[1]) == 2 and next_list[0].split('_')[1] == '10':
+            if len(next_list[0].split('_')[1]) in any([1,2]) and next_list[0].split('_')[1] in any(['11','10','7','6']):
                 for i in range(1,5): # finding ratios for 4 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] == '9':
+            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in any(['9','4']):
                 for i in range(1,4): # finding ratios for 3 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] == '8':
+            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in any(['8','5']):
                 for i in range(1,3): # finding ratios for 2 choices
-                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] == '7':
-                for i in range(1,5): # finding ratios for 4 choices
-                    fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] == '6':
-                for i in range(1,5): # finding ratios for 4 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             else:
                 for i in range(1,9): # finding ratios for all 8 choices
