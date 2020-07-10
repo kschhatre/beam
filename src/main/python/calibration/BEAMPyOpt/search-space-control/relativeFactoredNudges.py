@@ -309,6 +309,35 @@ def getNudges(whichCounter):
                             leaving_one_set.append(best_p[i])
                     random.shuffle(leaving_one_set)
                     prev_list = leaving_one_set[0] 
+            
+            # Add Gaussian error for 1 stage (4 iters) if min error has not improved for last 2 stage length
+            if validate: 
+                checker = []
+                if len(validate) > 56:
+                    recent_err = validate[-1][0].split('_')[1]
+                    check_repetition = validate[-8:]
+                    for i in range(len(check_repetition)):
+                        if check_repetition[i][0].split('_')[1] == recent_err:
+                            checker.append(1)
+                        else:
+                            pass
+                    if len(checker) == 8:
+                        print('The best CSV in memory bank has been repeated for continous last 2 stage length! Adjusting fetches...')
+                        names_sorted.sort(key=lambda x: int(x.split('_')[1]))
+                        exclude_best_err = []
+                        for i in range(len(names_sorted)):
+                            if names_sorted[i].split('_')[1] != recent_err:
+                                exclude_best_err.append(names_sorted[i]) 
+                        exclude_best_err.sort(key=lambda x: int(x.split('_')[1]))
+                        next_list = [exclude_best_err[0]] * 4 # second best
+                        third_best = []
+                        for i in range(len(exclude_best_err)):
+                            if exclude_best_err[i].split('_')[1] != exclude_best_err[0].split('_')[1]:
+                                third_best.append(exclude_best_err[i])
+                        third_best.sort(key=lambda x: int(x.split('_')[1]))
+                        prev_list = third_best[0:4] # third best
+                    else:
+                        print('The optimizer has past 11 stages and has been improving since last 2 stages!')
 
             if not validate:
                 updated_fetched_list = [[next_list[0]] + prev_list] 
