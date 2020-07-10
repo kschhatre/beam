@@ -290,7 +290,7 @@ def getNudges(whichCounter):
                 prev_list = for_prev[0:4]
             else:
                 prev_list = names_sorted[1:5] 
-                
+
             # only for 5 and 6 error
             if len(names_sorted[0].split('_')[1]) == 1:
                 if names_sorted[0].split('_')[1] == '5' or names_sorted[0].split('_')[1] == '6':
@@ -356,13 +356,13 @@ def getNudges(whichCounter):
                 fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0] / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             '''
 
-            if len(next_list[0].split('_')[1]) in any([1,2]) and next_list[0].split('_')[1] in any(['11','10','7','6']):
+            if len(next_list[0].split('_')[1]) in [1,2] and next_list[0].split('_')[1] in ['11','10','7','6']:
                 for i in range(1,5): # finding ratios for 4 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in any(['9','4']):
+            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in ['9','4']:
                 for i in range(1,4): # finding ratios for 3 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in any(['8','5']):
+            elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in ['8','5']:
                 for i in range(1,3): # finding ratios for 2 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             else:
