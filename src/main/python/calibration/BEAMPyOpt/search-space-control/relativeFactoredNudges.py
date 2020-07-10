@@ -310,18 +310,18 @@ def getNudges(whichCounter):
                     random.shuffle(leaving_one_set)
                     prev_list = leaving_one_set[0] 
             
-            # Add Gaussian error for 1 stage (4 iters) if min error has not improved for last 2 stage length
+            # Add Gaussian error for 1 stage (4 iters) if min error has not improved for last 5 stage length (20iters) after 56 total iters
             if validate: 
                 checker = []
-                if len(validate) > 56:
+                if len(validate) > 10:
                     recent_err = validate[-1][0].split('_')[1]
-                    check_repetition = validate[-8:]
+                    check_repetition = validate[-5:]
                     for i in range(len(check_repetition)):
                         if check_repetition[i][0].split('_')[1] == recent_err:
                             checker.append(1)
                         else:
                             pass
-                    if len(checker) == 8:
+                    if len(checker) == 5:
                         print('The best CSV in memory bank has been repeated for continous last 2 stage length! Adjusting fetches...')
                         names_sorted.sort(key=lambda x: int(x.split('_')[1]))
                         exclude_best_err = []
