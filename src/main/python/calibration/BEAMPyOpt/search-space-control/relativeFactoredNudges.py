@@ -38,9 +38,9 @@ def getNudges(whichCounter):
             vector_4_gradients = []
             for i in range(1,len(df.loc[5])):
                 if (df.loc[5][i] == 1):
-                    vector_4_gradients.append([np.random.uniform(0,15)])           # modified limits to 0 +15
+                    vector_4_gradients.append([np.random.uniform(1.5,11.5)])           # modified limits to 1.5 11.5 
                 else:
-                    vector_4_gradients.append([np.random.uniform(-12,-7)])         # modified limits to -12 -7
+                    vector_4_gradients.append([np.random.uniform(-14,-1)])             # modified limits to -14 -1
             vector_4_gradients = list(itertools.chain(*vector_4_gradients))
             input_vector.append(vector_4_gradients)  # 15 vector for first 16 runs based on the directionality
 
