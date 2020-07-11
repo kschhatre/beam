@@ -322,7 +322,7 @@ def getNudges(whichCounter):
                         else:
                             pass
                     if len(checker) == 5:
-                        print('The best CSV in memory bank has been repeated for continous last 2 stage length! Adjusting fetches...')
+                        print('The best CSV in memory bank has been repeated for continous last 5 stage length! Adjusting fetches...')
                         names_sorted.sort(key=lambda x: int(x.split('_')[1]))
                         exclude_best_err = []
                         for i in range(len(names_sorted)):
@@ -337,7 +337,7 @@ def getNudges(whichCounter):
                         third_best.sort(key=lambda x: int(x.split('_')[1]))
                         prev_list = third_best[0:4] # third best
                     else:
-                        print('The optimizer has past 11 stages and has been improving since last 2 stages!')
+                        print('The optimizer has past 11 stages and has been improving since last 5 stages!')
 
             if not validate:
                 updated_fetched_list = [[next_list[0]] + prev_list] 
