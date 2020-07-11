@@ -245,6 +245,8 @@ def getNudges(whichCounter):
             print('Fetch method is H')
             prev_list1, prev_list, next_list, names, old_compared_csv = [] = ([] for i in range(5)) 
             files = glob.glob(shared+'/*')
+
+            # sorting all memory bank according to their L1 norm
             for i in range(len(files)):
                 names.append(files[i][77:-4])  # extract file names only
             names_sorted = natsorted(names, key=lambda x: x.split('_')[0]) # sort with iteration number
@@ -257,12 +259,15 @@ def getNudges(whichCounter):
                 validate = []
 
             if validate:
+                # checking if least error from the current stage was seen before, 
+                # if so collecting all csv list that were compared to this least error
                 for i in range(len(validate)): 
                     if names_sorted[0] == validate[i][0]:  # validate is [ [a,b]  , [v,r] ... ]
                         old_compared_csv.append(validate[i][1:5]) 
                 old_compared_csv = list(itertools.chain(*old_compared_csv)) # flatten
                 old_compared_csv = list(set(old_compared_csv)) # remove duplicates
                 
+                # removing all previously compared least errors from originally sorted memory bank
                 for i in range(len(names_sorted)-1):
                     if names_sorted[i+1] in old_compared_csv:
                         pass
@@ -279,7 +284,9 @@ def getNudges(whichCounter):
             random.shuffle(best) 
             next_list = best[0] 
             '''
+            # Creating primary next list
             next_list = [names_sorted[0]] * 4
+            # created list of csv which dont have same least err as best least err
             for_prev=[]
             for i in range(len(prev_list1)):
                 if prev_list1[i].split('_')[1] != min_err:
@@ -291,15 +298,20 @@ def getNudges(whichCounter):
             else:
                 prev_list = names_sorted[1:5] 
 
-            # only for 5 and 6 error
+            # only for 5 and 6 error: take last two best err CSVs, if num of files is less than 4 then execute the following two loops:
             if len(names_sorted[0].split('_')[1]) == 1:
                 if names_sorted[0].split('_')[1] == '5' or names_sorted[0].split('_')[1] == '6':
+                    # arrange next list
                     best_n=[]
                     for i in range(len(names_sorted)):
                         if names_sorted[i].split('_')[1] == min_err:
                             best_n.append(names_sorted[i])
-                    random.shuffle(best_n) 
-                    next_list = best_n[0]
+                    random.shuffle(best_n)
+                    if len(best_n) < 4:
+                        next_list = [best_n[0]] * 4
+                    else:
+                        next_list = best_n[0:4]
+                    # arrange prev list
                     best_p = [item for item in names_sorted if item not in best_n]
                     best_p.sort(key=lambda x: int(x.split('_')[1]))
                     nex_min_err = best_p[0].split('_')[1]
@@ -307,8 +319,14 @@ def getNudges(whichCounter):
                     for i in range(len(best_p)):
                         if best_p[i].split('_')[1] == nex_min_err:
                             leaving_one_set.append(best_p[i])
+                    if len(leaving_one_set) < 4:
+                        how_many_to_add = 4-len(leaving_one_set)
+                        add_more_from = list(set(best_p) - set(leaving_one_set))
+                        add_more_from.sort(key=lambda x: int(x.split('_')[1]))
+                        for i in range(how_many_to_add):
+                            leaving_one_set.append(add_more_from[:i+1][0])
                     random.shuffle(leaving_one_set)
-                    prev_list = leaving_one_set[0] 
+                    prev_list = leaving_one_set 
             
             # Add Gaussian error for 1 stage (4 iters) if min error has not improved for last 5 stage length (20iters) after 56 total iters
             if validate: 
