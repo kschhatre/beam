@@ -55,6 +55,7 @@ def getNudges(whichCounter):
         methodE : 1 best from the whole lot with combination of 2 best and 2 worst to acheive larger dL1/dm
         methodF : 1 best vs 4 worst from all batch
         methodG : advanced methodD
+        methodH : MNL Inspired
         '''
 
         def methodB():
@@ -406,7 +407,7 @@ def getNudges(whichCounter):
             if len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in ['5','6']:
                 for i in range(1,5): # finding ratios for 4 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
-            elif len(next_list[0].split('_')[1]) == 2 and next_list[0].split('_')[1] in ['10','11','12']:
+            elif len(next_list[0].split('_')[1]) == 2 and next_list[0].split('_')[1] in ['10','11','12','13']:
                 for i in range(1,4): # finding ratios for 3 choices
                     fetch_ratios[list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().keys())[0]] = abs(list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == int('{i}'.format(i=i)),3].to_dict().values())[0]*1 / list(Rank_L1_df.loc[Rank_L1_df.iloc[:, 1] == 1,3].to_dict().values())[0])
             elif len(next_list[0].split('_')[1]) == 1 and next_list[0].split('_')[1] in ['7','8','9']:
